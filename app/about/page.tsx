@@ -46,7 +46,7 @@ export default function AboutPage() {
     <div className="flex flex-col min-h-screen">
       {/* Navigation */}
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-16 items-center justify-between">
+        <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
           <div className="flex items-center">
             <Link className="mr-6 flex items-center space-x-2" href="/">
               <Code className="h-6 w-6" />
@@ -166,7 +166,7 @@ export default function AboutPage() {
       <main className="flex-1">
         {/* Hero Section */}
         <section className="w-full py-12 md:py-24 lg:py-32">
-          <div className="container px-4 md:px-6">
+          <div className="container mx-auto px-4 md:px-6">
             <div className="grid gap-6 lg:grid-cols-[600px_1fr] lg:gap-12 items-center">
               <div className="flex items-center justify-center lg:justify-start">
                 <Image
@@ -211,7 +211,7 @@ export default function AboutPage() {
 
         {/* Education & Experience */}
         <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-50">
-          <div className="container px-4 md:px-6">
+          <div className="container mx-auto px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
               <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Education & Experience</h2>
               <p className="max-w-[900px] text-gray-500 md:text-xl/relaxed">
@@ -282,7 +282,7 @@ export default function AboutPage() {
 
         {/* Achievements & Skills */}
         <section className="w-full py-12 md:py-24 lg:py-32">
-          <div className="container px-4 md:px-6">
+          <div className="container mx-auto px-4 md:px-6">
             <div className="grid gap-6 lg:grid-cols-2 lg:gap-12">
               <div>
                 <h3 className="text-2xl font-bold tracking-tighter mb-6">Achievements & Recognition</h3>
@@ -366,7 +366,7 @@ export default function AboutPage() {
 
         {/* Contact Information */}
         <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-50">
-          <div className="container px-4 md:px-6">
+          <div className="container mx-auto px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
               <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Get in Touch</h2>
               <p className="max-w-[900px] text-gray-500 md:text-xl/relaxed">
@@ -403,15 +403,17 @@ export default function AboutPage() {
 
       {/* Footer */}
       <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
-        <p className="text-xs text-gray-500">© 2024 Janna Kovalenko. All rights reserved.</p>
-        <nav className="sm:ml-auto flex gap-4 sm:gap-6">
-          <Link className="text-xs hover:underline underline-offset-4" href="/contact">
-            Contact
-          </Link>
-          <Link className="text-xs hover:underline underline-offset-4" href="/resources">
-            Resources
-          </Link>
-        </nav>
+        <div className="container mx-auto flex flex-col sm:flex-row items-center justify-between">
+          <p className="text-xs text-gray-500">© 2024 Janna Kovalenko. All rights reserved.</p>
+          <nav className="flex gap-4 sm:gap-6 mt-2 sm:mt-0">
+            <Link className="text-xs hover:underline underline-offset-4" href="/contact">
+              Contact
+            </Link>
+            <Link className="text-xs hover:underline underline-offset-4" href="/resources">
+              Resources
+            </Link>
+          </nav>
+        </div>
       </footer>
     </div>
   )
