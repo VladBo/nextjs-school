@@ -19,12 +19,8 @@ import {
 } from "@/components/ui/navigation-menu"
 import { cn } from "@/lib/utils"
 
-import { Swiper, SwiperSlide } from "swiper/react"
-import { Navigation, Pagination, Autoplay, EffectFade } from "swiper/modules"
-import "swiper/css"
-import "swiper/css/navigation"
-import "swiper/css/pagination"
-import "swiper/css/effect-fade"
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
+import Autoplay from "embla-carousel-autoplay"
 
 const ListItem = React.forwardRef<React.ElementRef<"a">, React.ComponentPropsWithoutRef<"a">>(
   ({ className, title, children, ...props }, ref) => {
@@ -73,37 +69,34 @@ function HeroSlideshow() {
     },
   ]
 
+  const plugin = React.useRef(Autoplay({ delay: 4000, stopOnInteraction: true }))
+
   return (
-    <div className="relative w-full max-w-[550px] h-[550px] rounded-xl overflow-hidden shadow-2xl">
-      <Swiper
-        modules={[Navigation, Pagination, Autoplay, EffectFade]}
-        spaceBetween={0}
-        slidesPerView={1}
-        navigation
-        pagination={{ clickable: true }}
-        autoplay={{
-          delay: 4000,
-          disableOnInteraction: false,
-        }}
-        effect="fade"
-        fadeEffect={{ crossFade: true }}
-        loop={true}
+    <div className="relative w-full max-w-[550px] h-[550px]">
+      <Carousel
+        plugins={[plugin.current]}
         className="w-full h-full"
+        onMouseEnter={plugin.current.stop}
+        onMouseLeave={plugin.current.reset}
       >
-        {slides.map((slide, index) => (
-          <SwiperSlide key={index}>
-            <div className="relative w-full h-full">
-              <Image src={slide.image || "/placeholder.svg"} alt={slide.title} fill className="object-cover" />
-              <div className="absolute inset-0 bg-black/40 flex items-end">
-                <div className="p-6 text-white">
-                  <h3 className="text-xl font-bold mb-2">{slide.title}</h3>
-                  <p className="text-sm opacity-90">{slide.description}</p>
+        <CarouselContent className="h-[550px]">
+          {slides.map((slide, index) => (
+            <CarouselItem key={index} className="h-full">
+              <div className="relative w-full h-full rounded-xl overflow-hidden shadow-2xl">
+                <Image src={slide.image || "/placeholder.svg"} alt={slide.title} fill className="object-cover" />
+                <div className="absolute inset-0 bg-black/40 flex items-end">
+                  <div className="p-6 text-white">
+                    <h3 className="text-xl font-bold mb-2">{slide.title}</h3>
+                    <p className="text-sm opacity-90">{slide.description}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-          </SwiperSlide>
-        ))}
-      </Swiper>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious className="left-4" />
+        <CarouselNext className="right-4" />
+      </Carousel>
     </div>
   )
 }
@@ -232,7 +225,7 @@ export default function HomePage() {
 
       <main className="flex-1">
         {/* Hero Section with Slideshow */}
-        <section className="w-full py-8 md:py-16 lg:py-20 bg-gradient-to-br from-blue-50 to-indigo-100">
+        <section className="w-full py-6 md:py-10 lg:py-12 bg-gradient-to-br from-blue-50 to-indigo-100">
           <div className="container mx-auto px-4 md:px-6">
             <div className="grid gap-6 lg:grid-cols-[1fr_550px] lg:gap-12 xl:grid-cols-[1fr_600px] items-center">
               <div className="flex flex-col justify-center space-y-4">
@@ -265,7 +258,7 @@ export default function HomePage() {
         </section>
 
         {/* Features Section */}
-        <section className="w-full py-8 md:py-12 lg:py-16">
+        <section className="w-full py-6 md:py-8 lg:py-10">
           <div className="container mx-auto px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
@@ -276,7 +269,7 @@ export default function HomePage() {
                 </p>
               </div>
             </div>
-            <div className="mx-auto grid max-w-5xl items-center gap-6 py-8 lg:grid-cols-3 lg:gap-12">
+            <div className="mx-auto grid max-w-5xl items-center gap-6 py-6 lg:grid-cols-3 lg:gap-12">
               <Card>
                 <CardHeader>
                   <BookOpen className="h-10 w-10 text-blue-600" />
@@ -312,7 +305,7 @@ export default function HomePage() {
         </section>
 
         {/* Courses Section */}
-        <section className="w-full py-8 md:py-12 lg:py-16 bg-gray-50">
+        <section className="w-full py-6 md:py-8 lg:py-10 bg-gray-50">
           <div className="container mx-auto px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
@@ -322,7 +315,7 @@ export default function HomePage() {
                 </p>
               </div>
             </div>
-            <div className="mx-auto grid max-w-5xl items-center gap-6 py-8 lg:grid-cols-2 lg:gap-12">
+            <div className="mx-auto grid max-w-5xl items-center gap-6 py-6 lg:grid-cols-2 lg:gap-12">
               <Card>
                 <CardHeader>
                   <div className="flex items-center justify-between">
@@ -423,7 +416,7 @@ export default function HomePage() {
         </section>
 
         {/* Recent News Section */}
-        <section className="w-full py-8 md:py-12 lg:py-16">
+        <section className="w-full py-6 md:py-8 lg:py-10">
           <div className="container mx-auto px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
@@ -433,7 +426,7 @@ export default function HomePage() {
                 </p>
               </div>
             </div>
-            <div className="mx-auto grid max-w-5xl items-center gap-6 py-8 lg:grid-cols-3 lg:gap-12">
+            <div className="mx-auto grid max-w-5xl items-center gap-6 py-6 lg:grid-cols-3 lg:gap-12">
               <Card>
                 <CardHeader>
                   <div className="flex items-center justify-between">
@@ -479,7 +472,7 @@ export default function HomePage() {
       </main>
 
       {/* Footer */}
-      <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
+      <footer className="flex flex-col gap-2 sm:flex-row py-4 w-full shrink-0 items-center px-4 md:px-6 border-t">
         <div className="container mx-auto flex flex-col sm:flex-row items-center justify-between">
           <p className="text-xs text-gray-500">© 2024 Janna Kovalenko. All rights reserved.</p>
           <nav className="flex gap-4 sm:gap-6 mt-2 sm:mt-0">
