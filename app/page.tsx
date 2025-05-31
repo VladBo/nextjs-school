@@ -113,13 +113,13 @@ export default function HomePage() {
     <div className="flex flex-col min-h-screen">
       {/* Navigation */}
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-16 items-center">
-          <div className="mr-4 flex">
+        <div className="container flex h-16 items-center justify-between">
+          <div className="flex items-center">
             <Link className="mr-6 flex items-center space-x-2" href="/">
               <Code className="h-6 w-6" />
               <span className="hidden font-bold sm:inline-block">Janna Kovalenko</span>
             </Link>
-            <NavigationMenu>
+            <NavigationMenu className="hidden md:flex">
               <NavigationMenuList>
                 <NavigationMenuItem>
                   <Link href="/" legacyBehavior passHref>
@@ -234,7 +234,7 @@ export default function HomePage() {
         {/* Hero Section with Slideshow */}
         <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 bg-gradient-to-br from-blue-50 to-indigo-100">
           <div className="container px-4 md:px-6">
-            <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
+            <div className="grid gap-6 lg:grid-cols-[1fr_550px] lg:gap-12 xl:grid-cols-[1fr_600px] items-center">
               <div className="flex flex-col justify-center space-y-4">
                 <div className="space-y-2">
                   <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
@@ -257,7 +257,7 @@ export default function HomePage() {
                   </Button>
                 </div>
               </div>
-              <div className="flex items-center justify-center">
+              <div className="flex items-center justify-center lg:justify-end">
                 <HeroSlideshow />
               </div>
             </div>
@@ -266,7 +266,7 @@ export default function HomePage() {
 
         {/* Features Section */}
         <section className="w-full py-12 md:py-24 lg:py-32">
-          <div className="container px-4 md:px-6">
+          <div className="container px-4 md:px-6 mx-auto">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">What I Offer</h2>
@@ -313,7 +313,7 @@ export default function HomePage() {
 
         {/* Courses Section */}
         <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-50">
-          <div className="container px-4 md:px-6">
+          <div className="container px-4 md:px-6 mx-auto">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Current Courses</h2>
@@ -424,7 +424,7 @@ export default function HomePage() {
 
         {/* Recent News Section */}
         <section className="w-full py-12 md:py-24 lg:py-32">
-          <div className="container px-4 md:px-6">
+          <div className="container px-4 md:px-6 mx-auto">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Recent Updates</h2>

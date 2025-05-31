@@ -46,13 +46,13 @@ export default function AboutPage() {
     <div className="flex flex-col min-h-screen">
       {/* Navigation */}
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-16 items-center">
-          <div className="mr-4 flex">
+        <div className="container flex h-16 items-center justify-between">
+          <div className="flex items-center">
             <Link className="mr-6 flex items-center space-x-2" href="/">
               <Code className="h-6 w-6" />
               <span className="hidden font-bold sm:inline-block">Janna Kovalenko</span>
             </Link>
-            <NavigationMenu>
+            <NavigationMenu className="hidden md:flex">
               <NavigationMenuList>
                 <NavigationMenuItem>
                   <Link href="/" legacyBehavior passHref>
@@ -167,8 +167,8 @@ export default function AboutPage() {
         {/* Hero Section */}
         <section className="w-full py-12 md:py-24 lg:py-32">
           <div className="container px-4 md:px-6">
-            <div className="grid gap-6 lg:grid-cols-[400px_1fr] lg:gap-12 xl:grid-cols-[600px_1fr]">
-              <div className="flex items-center justify-center">
+            <div className="grid gap-6 lg:grid-cols-[600px_1fr] lg:gap-12 items-center">
+              <div className="flex items-center justify-center lg:justify-start">
                 <Image
                   alt="Janna Kovalenko - Computer Science Teacher"
                   className="aspect-square overflow-hidden rounded-xl object-cover"
