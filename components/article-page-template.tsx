@@ -65,7 +65,7 @@ interface ArticlePageTemplateProps {
 export default function ArticlePageTemplate({
   title,
   excerpt,
-  author = "Janna Kovalenko",
+  author = "Janna Bondarchuk",
   publishedAt,
   category,
   readingTime = "5 min read",
@@ -84,7 +84,7 @@ export default function ArticlePageTemplate({
           <div className="flex items-center">
             <Link className="mr-6 flex items-center space-x-2" href="/">
               <Code className="h-6 w-6" />
-              <span className="hidden font-bold sm:inline-block">Janna Kovalenko</span>
+              <span className="hidden font-bold sm:inline-block">Janna Bondarchuk</span>
             </Link>
             <NavigationMenu className="hidden md:flex">
               <NavigationMenuList>
@@ -403,7 +403,7 @@ export default function ArticlePageTemplate({
       {/* Footer */}
       <footer className="flex flex-col gap-2 sm:flex-row py-4 w-full shrink-0 items-center px-4 md:px-6 border-t">
         <div className="container mx-auto flex flex-col sm:flex-row items-center justify-between">
-          <p className="text-xs text-gray-500">© 2024 Janna Kovalenko. All rights reserved.</p>
+          <p className="text-xs text-gray-500">© 2024 Janna Bondarchuk. All rights reserved.</p>
           <nav className="flex gap-4 sm:gap-6 mt-2 sm:mt-0">
             <Link className="text-xs hover:underline underline-offset-4" href="/contact">
               Contact

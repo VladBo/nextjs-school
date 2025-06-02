@@ -50,7 +50,7 @@ export default function AboutPage() {
           <div className="flex items-center">
             <Link className="mr-6 flex items-center space-x-2" href="/">
               <Code className="h-6 w-6" />
-              <span className="hidden font-bold sm:inline-block">Janna Kovalenko</span>
+              <span className="hidden font-bold sm:inline-block">Janna Bondarchuk</span>
             </Link>
             <NavigationMenu className="hidden md:flex">
               <NavigationMenuList>
@@ -190,7 +190,7 @@ export default function AboutPage() {
             <div className="grid gap-6 lg:grid-cols-[600px_1fr] lg:gap-12 items-center">
               <div className="flex items-center justify-center lg:justify-start">
                 <Image
-                  alt="Janna Kovalenko - Computer Science Teacher"
+                  alt="Janna Bondarchuk - Computer Science Teacher"
                   className="aspect-square overflow-hidden rounded-xl object-cover"
                   height="600"
                   src="/placeholder.svg?height=600&width=600"
@@ -200,15 +200,16 @@ export default function AboutPage() {
               <div className="flex flex-col justify-center space-y-4">
                 <div className="space-y-2">
                   <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
-                    About Janna Kovalenko
+                    About Janna Bondarchuk
                   </h1>
                   <p className="max-w-[600px] text-gray-500 md:text-xl">Passionate Computer Science Educator</p>
                 </div>
                 <div className="space-y-4">
                   <p className="text-gray-600 leading-relaxed">
-                    With over 15 years of experience in computer science education, I am dedicated to inspiring students
-                    to explore the fascinating world of programming and technology. My mission is to make computer
-                    science accessible, engaging, and relevant to students of all backgrounds and skill levels.
+                    With over 15 years of experience in computer science education at Lutsk School №2, I am dedicated to
+                    inspiring students to explore the fascinating world of programming and technology. My mission is to
+                    make computer science accessible, engaging, and relevant to students of all backgrounds and skill
+                    levels.
                   </p>
                   <p className="text-gray-600 leading-relaxed">
                     I believe that every student has the potential to become a creative problem solver and innovative
@@ -273,7 +274,7 @@ export default function AboutPage() {
                 <CardContent className="space-y-4">
                   <div>
                     <h4 className="font-semibold">Senior Computer Science Teacher</h4>
-                    <p className="text-sm text-gray-500">Current School, 2015 - Present</p>
+                    <p className="text-sm text-gray-500">Lutsk School №2, 2015 - Present</p>
                     <p className="text-sm text-gray-600 mt-1">
                       Lead computer science curriculum development and teach advanced programming courses
                     </p>
@@ -281,7 +282,7 @@ export default function AboutPage() {
                   <Separator />
                   <div>
                     <h4 className="font-semibold">Computer Science Teacher</h4>
-                    <p className="text-sm text-gray-500">Previous School, 2009 - 2015</p>
+                    <p className="text-sm text-gray-500">Previous Educational Institution, 2009 - 2015</p>
                     <p className="text-sm text-gray-600 mt-1">
                       Taught introductory programming and established the school's first CS program
                     </p>
@@ -399,7 +400,7 @@ export default function AboutPage() {
                 <CardHeader className="text-center">
                   <Mail className="h-10 w-10 text-blue-600 mx-auto mb-2" />
                   <CardTitle>Email</CardTitle>
-                  <CardDescription>janna.kovalenko@school.edu.ua</CardDescription>
+                  <CardDescription>janna.bondarchuk@lutsk-school2.edu.ua</CardDescription>
                 </CardHeader>
               </Card>
               <Card>
@@ -413,7 +414,7 @@ export default function AboutPage() {
                 <CardHeader className="text-center">
                   <MapPin className="h-10 w-10 text-red-600 mx-auto mb-2" />
                   <CardTitle>Office</CardTitle>
-                  <CardDescription>Room 205, Computer Science Building</CardDescription>
+                  <CardDescription>Room 205, Computer Science Department, Lutsk School №2</CardDescription>
                 </CardHeader>
               </Card>
             </div>
@@ -424,7 +425,7 @@ export default function AboutPage() {
       {/* Footer */}
       <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
         <div className="container mx-auto flex flex-col sm:flex-row items-center justify-between">
-          <p className="text-xs text-gray-500">© 2024 Janna Kovalenko. All rights reserved.</p>
+          <p className="text-xs text-gray-500">© 2024 Janna Bondarchuk. All rights reserved.</p>
           <nav className="flex gap-4 sm:gap-6 mt-2 sm:mt-0">
             <Link className="text-xs hover:underline underline-offset-4" href="/contact">
               Contact
