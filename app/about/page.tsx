@@ -120,6 +120,26 @@ export default function AboutPage() {
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
+                  <NavigationMenuTrigger>News & Articles</NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+                      <ListItem href="/news/latest" title="Latest News">
+                        The most recent updates and announcements.
+                      </ListItem>
+                      <ListItem href="/articles/featured" title="Featured Articles">
+                        In-depth articles on trending topics.
+                      </ListItem>
+                      <ListItem href="/articles/archive" title="Article Archive">
+                        A comprehensive collection of all published articles.
+                      </ListItem>
+                      <ListItem href="/news/events" title="Upcoming Events">
+                        Stay informed about upcoming events and workshops.
+                      </ListItem>
+                    </ul>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+
+                <NavigationMenuItem>
                   <NavigationMenuTrigger>About</NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
