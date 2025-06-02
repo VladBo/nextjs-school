@@ -144,6 +144,40 @@ export default function InformationalPageTemplate({
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
+                  <NavigationMenuTrigger>News & Articles</NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
+                      <li className="row-span-3">
+                        <NavigationMenuLink asChild>
+                          <a
+                            className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
+                            href="/articles"
+                          >
+                            <BookOpen className="h-6 w-6" />
+                            <div className="mb-2 mt-4 text-lg font-medium">All Articles</div>
+                            <p className="text-sm leading-tight text-muted-foreground">
+                              Latest news, updates, and educational insights
+                            </p>
+                          </a>
+                        </NavigationMenuLink>
+                      </li>
+                      <ListItem
+                        href="/articles/programming-competition-success"
+                        title="Programming Competition Success"
+                      >
+                        Our students win first place in regional olympiad
+                      </ListItem>
+                      <ListItem href="/articles/new-web-development-module" title="New Web Development Module">
+                        React and modern JavaScript added to curriculum
+                      </ListItem>
+                      <ListItem href="/articles/tech-industry-guest-speaker" title="Tech Industry Guest Speaker">
+                        Senior engineer shares career insights with students
+                      </ListItem>
+                    </ul>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+
+                <NavigationMenuItem>
                   <NavigationMenuTrigger>About</NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">

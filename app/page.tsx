@@ -197,14 +197,17 @@ export default function HomePage() {
                           </a>
                         </NavigationMenuLink>
                       </li>
-                      <ListItem href="/articles/category/achievements" title="Achievements">
-                        Student successes and competition results
+                      <ListItem
+                        href="/articles/programming-competition-success"
+                        title="Programming Competition Success"
+                      >
+                        Our students win first place in regional olympiad
                       </ListItem>
-                      <ListItem href="/articles/category/course-updates" title="Course Updates">
-                        New curriculum and teaching methods
+                      <ListItem href="/articles/new-web-development-module" title="New Web Development Module">
+                        React and modern JavaScript added to curriculum
                       </ListItem>
-                      <ListItem href="/articles/category/events" title="Events">
-                        Workshops, guest speakers, and activities
+                      <ListItem href="/articles/tech-industry-guest-speaker" title="Tech Industry Guest Speaker">
+                        Senior engineer shares career insights with students
                       </ListItem>
                     </ul>
                   </NavigationMenuContent>
