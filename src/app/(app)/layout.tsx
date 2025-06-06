@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 
-// import { Footer } from '@/components/shared/footer';
-// import { Header } from '@/components/shared/header';
+import { Footer } from '@/components/footer';
+import { Header } from '@/components/header';
 
 export default function AppLayout({
   children,
@@ -10,9 +10,9 @@ export default function AppLayout({
 }>) {
   return (
     <div className="flex min-h-screen flex-col">
-      {/* <Header /> */}
+      <Header />
       <main className="flex-1">{children}</main>
-      {/* <Footer /> */}
+      <Footer />
     </div>
   );
 }
