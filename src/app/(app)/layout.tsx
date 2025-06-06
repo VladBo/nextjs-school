@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 
-import { Footer, Header } from '@/components/shared';
+import { Footer } from '@/components/shared/footer';
+import { Header } from '@/components/shared/header';
 
 export default function AppLayout({
   children,
