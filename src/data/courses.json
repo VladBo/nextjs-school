@@ -1,0 +1,32 @@
+{
+  "intro-programming": {
+    "title": "Introduction to Programming",
+    "subtitle": "Learn Python fundamentals and computational thinking",
+    "description": "This course introduces students to the fundamental concepts of programming using Python. Students will learn to think computationally and solve problems through code.",
+    "badge": "Grade 9-10",
+    "heroImage": "/placeholder.svg?height=200&width=300",
+    "breadcrumb": { "label": "Courses", "href": "/courses" },
+    "sidebarHtml": "<div><h4>Course Information</h4><ul><li>Mon, Wed, Fri</li><li>10:00 AM - 11:30 AM</li><li>25 students enrolled</li></ul><hr/><h4>Prerequisites</h4><p>Basic computer literacy</p><h4>Duration</h4><p>Full academic year</p></div>",
+    "contentHtml": "<h2>Course Overview</h2><p>Introduction to Programming is designed for students with little to no programming experience. Through hands-on projects and interactive exercises, students will master the fundamentals of Python programming while developing critical thinking and problem-solving skills.</p><p>By the end of this course, students will be able to write simple programs, understand basic algorithms, and have a solid foundation for more advanced computer science courses.</p><h2>Learning Objectives</h2><ul><li>Understand fundamental programming concepts including variables, data types, and operators</li><li>Master control structures: conditionals, loops, and functions</li><li>Work with basic data structures like lists and dictionaries</li><li>Develop problem-solving skills through algorithmic thinking</li><li>Create simple interactive programs and games</li></ul>"
+  },
+  "advanced-programming": {
+    "title": "Advanced Programming",
+    "subtitle": "Object-oriented programming and algorithms",
+    "description": "A deep dive into OOP, data structures, and algorithms using Java and C++. Ideal for students preparing for olympiads or university CS programs.",
+    "badge": "Grade 11-12",
+    "heroImage": "/placeholder.svg?height=200&width=300",
+    "breadcrumb": { "label": "Courses", "href": "/courses" },
+    "sidebarHtml": "<div><h4>Course Information</h4><ul><li>Tue, Thu</li><li>2:00 PM - 3:30 PM</li><li>18 students enrolled</li></ul><hr/><h4>Prerequisites</h4><p>Intro to Programming or equivalent</p><h4>Duration</h4><p>Full academic year</p></div>",
+    "contentHtml": "<h2>Course Overview</h2><p>This course covers advanced programming concepts, including object-oriented design, recursion, and algorithmic problem solving. Students will use Java and C++ to implement complex data structures and algorithms.</p><h2>Topics</h2><ul><li>Classes, objects, and inheritance</li><li>Recursion and backtracking</li><li>Sorting and searching algorithms</li><li>Trees, graphs, and advanced data structures</li><li>Competitive programming techniques</li></ul>"
+  },
+  "web-development": {
+    "title": "Web Development",
+    "subtitle": "Modern web technologies and frameworks",
+    "description": "Students will learn to build interactive websites and web apps using HTML, CSS, JavaScript, and React. Includes hands-on projects and teamwork.",
+    "badge": "Grade 10-12",
+    "heroImage": "/placeholder.svg?height=200&width=300",
+    "breadcrumb": { "label": "Courses", "href": "/courses" },
+    "sidebarHtml": "<div><h4>Course Information</h4><ul><li>Sat</li><li>11:00 AM - 1:00 PM</li><li>30 students enrolled</li></ul><hr/><h4>Prerequisites</h4><p>Basic programming knowledge</p><h4>Duration</h4><p>1 semester</p></div>",
+    "contentHtml": "<h2>Course Overview</h2><p>This course introduces students to web development using modern tools and frameworks. Students will create responsive websites and dynamic web applications.</p><h2>Topics</h2><ul><li>HTML5 & CSS3 basics</li><li>JavaScript fundamentals</li><li>React basics</li><li>APIs and AJAX</li><li>Team project: Build a website</li></ul>"
+  }
+}
