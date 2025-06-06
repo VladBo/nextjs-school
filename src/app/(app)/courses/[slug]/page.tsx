@@ -1,24 +1,10 @@
-import {
-  ArrowLeft,
-  BookOpen,
-  Calendar,
-  Clock,
-  Code,
-  Download,
-  ExternalLink,
-  Trophy,
-  Users,
-} from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ReactNode } from 'react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
-// Import courses data from JSON
 import coursesData from '@/data/courses.json';
 
 interface Course {
@@ -92,7 +78,7 @@ export default async function CoursePage({ params }: Props) {
           <div className="mb-4">
             <Button variant="ghost" asChild>
               <Link href="/courses">
-                <ArrowLeft className="mr-2 h-4 w-4" />
+                <ArrowLeft className="mr-2 size-4" />
                 All Courses
               </Link>
             </Button>

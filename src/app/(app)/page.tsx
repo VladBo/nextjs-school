@@ -53,14 +53,14 @@ function HeroSlideshow() {
     <div className="relative h-[550px] w-full max-w-[550px]">
       <Carousel
         plugins={[plugin.current]}
-        className="h-full w-full"
+        className="size-full"
         onMouseEnter={plugin.current.stop}
         onMouseLeave={plugin.current.reset}
       >
         <CarouselContent className="h-[550px]">
           {slides.map((slide, index) => (
             <CarouselItem key={index} className="h-full">
-              <div className="relative h-full w-full overflow-hidden rounded-xl shadow-2xl">
+              <div className="relative size-full overflow-hidden rounded-xl shadow-2xl">
                 <Image
                   src={slide.image || '/placeholder.svg'}
                   alt={slide.title}
@@ -108,7 +108,7 @@ export default function HomePage() {
                   <Button asChild size="lg">
                     <Link href="/about">
                       Learn More About Me
-                      <ArrowRight className="ml-2 h-4 w-4" />
+                      <ArrowRight className="ml-2 size-4" />
                     </Link>
                   </Button>
                   <Button variant="outline" size="lg" asChild>
@@ -140,7 +140,7 @@ export default function HomePage() {
             <div className="mx-auto grid max-w-5xl items-center gap-6 py-6 lg:grid-cols-3 lg:gap-12">
               <Card>
                 <CardHeader>
-                  <BookOpen className="h-10 w-10 text-blue-600" />
+                  <BookOpen className="size-10 text-blue-600" />
                   <CardTitle>Programming Fundamentals</CardTitle>
                   <CardDescription>
                     Learn the basics of programming with Python, Java, and C++.
@@ -150,7 +150,7 @@ export default function HomePage() {
               </Card>
               <Card>
                 <CardHeader>
-                  <Code className="h-10 w-10 text-green-600" />
+                  <Code className="size-10 text-green-600" />
                   <CardTitle>Web Development</CardTitle>
                   <CardDescription>
                     Master HTML, CSS, JavaScript, and modern frameworks. Create
@@ -160,7 +160,7 @@ export default function HomePage() {
               </Card>
               <Card>
                 <CardHeader>
-                  <Users className="h-10 w-10 text-purple-600" />
+                  <Users className="size-10 text-purple-600" />
                   <CardTitle>Project-Based Learning</CardTitle>
                   <CardDescription>
                     Work on real-world projects and collaborate with peers.
@@ -181,7 +181,7 @@ export default function HomePage() {
                   Current Courses
                 </h2>
                 <p className="max-w-[900px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  Explore the courses I'm currently teaching this semester.
+                  Explore the courses I&apos;m currently teaching this semester.
                 </p>
               </div>
             </div>
@@ -200,11 +200,11 @@ export default function HomePage() {
                 <CardContent>
                   <div className="flex items-center space-x-4 text-sm text-gray-500">
                     <div className="flex items-center">
-                      <Calendar className="mr-1 h-3 w-3" />
+                      <Calendar className="mr-1 size-3" />
                       Mon, Wed, Fri
                     </div>
                     <div className="flex items-center">
-                      <Users className="mr-1 h-3 w-3" />
+                      <Users className="mr-1 size-3" />
                       25 students
                     </div>
                   </div>
@@ -224,11 +224,11 @@ export default function HomePage() {
                 <CardContent>
                   <div className="flex items-center space-x-4 text-sm text-gray-500">
                     <div className="flex items-center">
-                      <Calendar className="mr-1 h-3 w-3" />
+                      <Calendar className="mr-1 size-3" />
                       Tue, Thu
                     </div>
                     <div className="flex items-center">
-                      <Users className="mr-1 h-3 w-3" />
+                      <Users className="mr-1 size-3" />
                       18 students
                     </div>
                   </div>
@@ -248,11 +248,11 @@ export default function HomePage() {
                 <CardContent>
                   <div className="flex items-center space-x-4 text-sm text-gray-500">
                     <div className="flex items-center">
-                      <Calendar className="mr-1 h-3 w-3" />
+                      <Calendar className="mr-1 size-3" />
                       Mon, Wed
                     </div>
                     <div className="flex items-center">
-                      <Users className="mr-1 h-3 w-3" />
+                      <Users className="mr-1 size-3" />
                       22 students
                     </div>
                   </div>
@@ -272,11 +272,11 @@ export default function HomePage() {
                 <CardContent>
                   <div className="flex items-center space-x-4 text-sm text-gray-500">
                     <div className="flex items-center">
-                      <Calendar className="mr-1 h-3 w-3" />
+                      <Calendar className="mr-1 size-3" />
                       Friday
                     </div>
                     <div className="flex items-center">
-                      <Users className="mr-1 h-3 w-3" />
+                      <Users className="mr-1 size-3" />
                       12 students
                     </div>
                   </div>
@@ -352,7 +352,7 @@ export default function HomePage() {
       </main>
 
       {/* Footer */}
-      <footer className="flex w-full shrink-0 flex-col items-center gap-2 border-t px-4 py-4 sm:flex-row md:px-6">
+      <footer className="flex w-full shrink-0 flex-col items-center gap-2 border-t p-4 sm:flex-row md:px-6">
         <div className="container mx-auto flex flex-col items-center justify-between sm:flex-row">
           <p className="text-xs text-gray-500">
             © 2024 Janna Bondarchuk. All rights reserved.

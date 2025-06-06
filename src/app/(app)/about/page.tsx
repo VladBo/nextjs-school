@@ -117,7 +117,7 @@ export default function AboutPage() {
           <div className="mx-auto grid max-w-5xl gap-6 lg:grid-cols-2 lg:gap-12">
             <Card>
               <CardHeader>
-                <GraduationCap className="mb-2 h-10 w-10 text-blue-600" />
+                <GraduationCap className="mb-2 size-10 text-blue-600" />
                 <CardTitle>Education</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -159,7 +159,7 @@ export default function AboutPage() {
 
             <Card>
               <CardHeader>
-                <BookOpen className="mb-2 h-10 w-10 text-green-600" />
+                <BookOpen className="mb-2 size-10 text-green-600" />
                 <CardTitle>Teaching Experience</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -182,8 +182,8 @@ export default function AboutPage() {
                     Previous Educational Institution, 2009 - 2015
                   </p>
                   <p className="mt-1 text-sm text-gray-600">
-                    Taught introductory programming and established the school's
-                    first CS program
+                    Taught introductory programming and established the
+                    school&apos;s first CS program
                   </p>
                 </div>
                 <Separator />
@@ -215,7 +215,7 @@ export default function AboutPage() {
                 <Card>
                   <CardHeader className="pb-3">
                     <div className="flex items-center gap-2">
-                      <Award className="h-5 w-5 text-yellow-600" />
+                      <Award className="size-5 text-yellow-600" />
                       <CardTitle className="text-lg">
                         Excellence in Teaching Award
                       </CardTitle>
@@ -229,7 +229,7 @@ export default function AboutPage() {
                 <Card>
                   <CardHeader className="pb-3">
                     <div className="flex items-center gap-2">
-                      <Users className="h-5 w-5 text-blue-600" />
+                      <Users className="size-5 text-blue-600" />
                       <CardTitle className="text-lg">
                         Student Competition Success
                       </CardTitle>
@@ -243,7 +243,7 @@ export default function AboutPage() {
                 <Card>
                   <CardHeader className="pb-3">
                     <div className="flex items-center gap-2">
-                      <BookOpen className="h-5 w-5 text-green-600" />
+                      <BookOpen className="size-5 text-green-600" />
                       <CardTitle className="text-lg">
                         Curriculum Development
                       </CardTitle>
@@ -315,7 +315,7 @@ export default function AboutPage() {
           <div className="mx-auto grid max-w-3xl gap-6 lg:grid-cols-3">
             <Card>
               <CardHeader className="text-center">
-                <Mail className="mx-auto mb-2 h-10 w-10 text-blue-600" />
+                <Mail className="mx-auto mb-2 size-10 text-blue-600" />
                 <CardTitle>Email</CardTitle>
                 <CardDescription>
                   janna.bondarchuk@lutsk-school2.edu.ua
@@ -324,14 +324,14 @@ export default function AboutPage() {
             </Card>
             <Card>
               <CardHeader className="text-center">
-                <Phone className="mx-auto mb-2 h-10 w-10 text-green-600" />
+                <Phone className="mx-auto mb-2 size-10 text-green-600" />
                 <CardTitle>Phone</CardTitle>
                 <CardDescription>+380 (44) 123-4567</CardDescription>
               </CardHeader>
             </Card>
             <Card>
               <CardHeader className="text-center">
-                <MapPin className="mx-auto mb-2 h-10 w-10 text-red-600" />
+                <MapPin className="mx-auto mb-2 size-10 text-red-600" />
                 <CardTitle>Office</CardTitle>
                 <CardDescription>
                   Room 205, Computer Science Department, Lutsk School №2

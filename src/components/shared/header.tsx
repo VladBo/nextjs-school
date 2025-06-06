@@ -1,4 +1,4 @@
-import { BookOpen, Code, GraduationCap } from 'lucide-react';
+import { BookOpen, Code } from 'lucide-react';
 import Link from 'next/link';
 import React, {
   ComponentPropsWithoutRef,
@@ -49,7 +49,7 @@ export function Header() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
         <div className="flex items-center">
           <Link className="mr-6 flex items-center space-x-2" href="/">
-            <Code className="h-6 w-6" />
+            <Code className="size-6" />
             <span className="hidden font-bold sm:inline-block">
               Janna Bondarchuk
             </span>
@@ -70,11 +70,11 @@ export function Header() {
                   <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
                     <li className="row-span-3">
                       <NavigationMenuLink asChild>
-                        <a
-                          className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
+                        <Link
+                          className="flex size-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
                           href="/courses"
                         >
-                          <BookOpen className="h-6 w-6" />
+                          <BookOpen className="size-6" />
                           <div className="mb-2 mt-4 text-lg font-medium">
                             All Courses
                           </div>
@@ -82,7 +82,7 @@ export function Header() {
                             Explore our comprehensive computer science
                             curriculum
                           </p>
-                        </a>
+                        </Link>
                       </NavigationMenuLink>
                     </li>
                     <ListItem
@@ -112,18 +112,18 @@ export function Header() {
                   <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
                     <li className="row-span-3">
                       <NavigationMenuLink asChild>
-                        <a
-                          className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
+                        <Link
+                          className="flex size-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
                           href="/articles"
                         >
-                          <BookOpen className="h-6 w-6" />
+                          <BookOpen className="size-6" />
                           <div className="mb-2 mt-4 text-lg font-medium">
                             All Articles
                           </div>
                           <p className="text-sm leading-tight text-muted-foreground">
                             Latest news, updates, and educational insights
                           </p>
-                        </a>
+                        </Link>
                       </NavigationMenuLink>
                     </li>
                     <ListItem
