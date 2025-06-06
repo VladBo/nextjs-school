@@ -2,6 +2,9 @@ import { Analytics } from '@vercel/analytics/next';
 import type { Metadata } from 'next';
 import { ReactNode } from 'react';
 
+import { Footer } from '@/components/footer';
+import { Header } from '@/components/header';
+
 import '../styles/globals.css';
 
 export const metadata: Metadata = {
@@ -18,7 +21,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {children}
+        <div className="flex min-h-screen flex-col">
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </div>
         <Analytics />
       </body>
     </html>

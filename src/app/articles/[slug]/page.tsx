@@ -93,7 +93,7 @@ export default async function ArticlePage(props: Props) {
         <div className="container mx-auto px-4 md:px-6">
           <Button variant="ghost" asChild>
             <Link href="/articles">
-              <ArrowLeft className="mr-2 h-4 w-4" />
+              <ArrowLeft className="mr-2 size-4" />
               Back to Articles
             </Link>
           </Button>
@@ -118,19 +118,19 @@ export default async function ArticlePage(props: Props) {
               {/* Article Meta */}
               <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
                 <div className="flex items-center gap-1">
-                  <User className="h-4 w-4" />
+                  <User className="size-4" />
                   <span>{article.author}</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <Calendar className="h-4 w-4" />
+                  <Calendar className="size-4" />
                   <span>{article.publishedAt}</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <Clock className="h-4 w-4" />
+                  <Clock className="size-4" />
                   <span>{article.readingTime}</span>
                 </div>
                 <Button variant="ghost" size="sm">
-                  <Share2 className="mr-1 h-4 w-4" />
+                  <Share2 className="mr-1 size-4" />
                   Share
                 </Button>
               </div>
@@ -163,7 +163,7 @@ export default async function ArticlePage(props: Props) {
             {article.tags.length > 0 && (
               <div className="mt-8 border-t pt-6">
                 <div className="flex flex-wrap items-center gap-2">
-                  <Tag className="h-4 w-4 text-gray-500" />
+                  <Tag className="size-4 text-gray-500" />
                   <span className="text-sm text-gray-500">Tags:</span>
                   {article.tags.map((tag, index) => (
                     <Badge key={index} variant="outline">
