@@ -5,6 +5,9 @@ export const cn = (...inputs: ClassValue[]) => {
   return twMerge(clsx(inputs));
 };
 
-export const getImageUrl = (url: string): string => {
+export function getStrapiMediaUrl(url?: string) {
+  if (url?.startsWith('http')) {
+    return url;
+  }
   return `${process.env.NEXT_PUBLIC_STRAPI_URL}${url}`;
-};
+}

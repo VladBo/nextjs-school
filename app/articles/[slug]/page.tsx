@@ -1,18 +1,14 @@
-import { ArrowLeft, Calendar, Clock, Share2, Tag, User } from 'lucide-react';
 import type { Metadata } from 'next';
-import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 import { BackButton } from '@/components/back-button';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArticleBlocks } from '@/features/articles/components/article-blocks';
 import { ArticleImage } from '@/features/articles/components/article-image';
 import { ArticleMeta } from '@/features/articles/components/article-meta';
 import { getArticleBySlug } from '@/features/articles/db';
-import { getImageUrl } from '@/lib/utils';
+import { getStrapiMediaUrl } from '@/lib/utils';
 
 type PageProps = {
   params: Promise<{
@@ -41,6 +37,9 @@ export default async function ArticlePage(props: PageProps) {
   if (!article) {
     notFound();
   }
+
+  console.log('url:', article.cover?.url);
+  console.log('media url:', getStrapiMediaUrl(article.cover?.url));
 
   return (
     <article className="w-full">
@@ -85,7 +84,7 @@ export default async function ArticlePage(props: PageProps) {
               />
               {article.cover && (
                 <ArticleImage
-                  src={getImageUrl(article.cover?.url ?? '')}
+                  src={getStrapiMediaUrl(article.cover?.url)}
                   alt={article.cover?.alternativeText ?? ''}
                 />
               )}
