@@ -30,16 +30,13 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
   };
 }
 
-export default async function ArticlePage(props: PageProps) {
+export const ArticlePage = async (props: PageProps) => {
   const params = await props.params;
   const article = await getArticleBySlug(params.slug);
 
   if (!article) {
     notFound();
   }
-
-  console.log('url:', article.cover?.url);
-  console.log('media url:', getStrapiMediaUrl(article.cover?.url));
 
   return (
     <article className="w-full">
@@ -186,4 +183,6 @@ export default async function ArticlePage(props: PageProps) {
       )} */}
     </article>
   );
-}
+};
+
+export default ArticlePage;

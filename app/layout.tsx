@@ -2,7 +2,6 @@ import { Analytics } from '@vercel/analytics/next';
 import type { Metadata } from 'next';
 import { ReactNode } from 'react';
 
-// import { Header } from '../components/header';
 import { Header } from '@/features/header/components/header';
 
 import { Footer } from '../components/footer';

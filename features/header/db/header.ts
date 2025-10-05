@@ -10,6 +10,12 @@ export const getHeaderMenu = async () => {
         },
       },
     },
+    fetch: (request: RequestInfo, init?: RequestInit) =>
+      fetch(request, {
+        ...init,
+        next: { tags: ['header-menu'] },
+        cache: 'force-cache',
+      }),
   });
 
   return response.data?.data;

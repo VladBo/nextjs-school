@@ -12,6 +12,12 @@ export const getArticleBySlug = async (slug: string) => {
         populate: '*',
       },
     },
+    fetch: (request: RequestInfo, init?: RequestInit) =>
+      fetch(request, {
+        ...init,
+        next: { tags: [`article-${slug}`] },
+        cache: 'force-cache',
+      }),
   });
 
   return response.data?.data?.[0];
