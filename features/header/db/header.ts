@@ -1,4 +1,5 @@
 import { client } from '@/lib/api';
+import { CACHE_TAGS } from '@/lib/cache';
 
 export const getHeaderMenu = async () => {
   const response = await client.GET('/header-menu', {
@@ -13,7 +14,7 @@ export const getHeaderMenu = async () => {
     fetch: (request: RequestInfo, init?: RequestInit) =>
       fetch(request, {
         ...init,
-        next: { tags: ['header-menu'] },
+        next: { tags: [CACHE_TAGS.HEADER_MENU] },
         cache: 'force-cache',
       }),
   });

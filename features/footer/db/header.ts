@@ -1,4 +1,5 @@
 import { client } from '@/lib/api';
+import { CACHE_TAGS } from '@/lib/cache';
 
 export const getFooterMenu = async () => {
   const response = await client.GET('/footer-menu', {
@@ -13,7 +14,7 @@ export const getFooterMenu = async () => {
     fetch: (request: RequestInfo, init?: RequestInit) =>
       fetch(request, {
         ...init,
-        next: { tags: ['footer-menu'] },
+        next: { tags: [CACHE_TAGS.FOOTER_MENU] },
         cache: 'force-cache',
       }),
   });

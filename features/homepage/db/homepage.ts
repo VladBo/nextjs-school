@@ -1,4 +1,5 @@
 import { client } from '@/lib/api';
+import { CACHE_TAGS } from '@/lib/cache';
 
 export const getGlobalSettings = async () => {
   const response = await client.GET('/global', {
@@ -56,7 +57,7 @@ export const getHomepage = async () => {
     fetch: (request: RequestInfo, init?: RequestInit) =>
       fetch(request, {
         ...init,
-        next: { tags: ['homepage'] },
+        next: { tags: [CACHE_TAGS.HOMEPAGE] },
         cache: 'force-cache',
       }),
   });

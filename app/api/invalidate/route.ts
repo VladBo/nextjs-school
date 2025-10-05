@@ -33,39 +33,35 @@ export async function POST(request: NextRequest) {
       slug: payload.entry?.slug,
     });
 
-    // Get cache tags to invalidate based on the content type
     const tagsToInvalidate =
       CONTENT_TYPE_CACHE_MAP[
         payload.model as keyof typeof CONTENT_TYPE_CACHE_MAP
       ] || [];
 
-    // Invalidate cache tags
     for (const tag of tagsToInvalidate) {
       console.log(`🗑️  Invalidating cache tag: ${tag}`);
       revalidateTag(tag);
     }
 
-    if (payload.model === 'api::article.article' && payload.entry?.slug) {
+    if (payload.model === 'article' && payload.entry?.slug) {
       revalidatePath(`/articles/${payload.entry.slug}`);
     }
 
-    if (payload.model === 'api::course.course' && payload.entry?.slug) {
+    if (payload.model === 'course' && payload.entry?.slug) {
       revalidatePath(`/courses/${payload.entry.slug}`);
     }
 
-    if (
-      ['api::homepage.homepage', 'api::global.global'].includes(payload.model)
-    ) {
+    if (payload.model === 'homepage') {
       console.log('🔄 Revalidating homepage path');
       revalidatePath('/');
     }
 
-    // If header menu is updated, revalidate all pages (since header is on all pages)
     if (
-      payload.model === 'api::header-menu.header-menu' ||
-      payload.model === 'api::header-menu.footer-menu'
+      payload.model === 'header-menu' ||
+      payload.model === 'footer-menu' ||
+      payload.model === 'global'
     ) {
-      console.log('🔄 Revalidating all paths due to header menu change');
+      console.log('🔄 Revalidating all paths due to menu change');
       revalidatePath('/', 'layout');
     }
 
