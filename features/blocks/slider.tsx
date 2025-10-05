@@ -38,9 +38,9 @@ export const Slider = ({ content }: SlideProps) => {
                     slide.image?.url ?? '/placeholder.svg'
                   )}
                   alt={slide.image?.alternativeText ?? 'Slide Image'}
-                  // fill
-                  className="object-fill"
-                  height={600}
+                  className="object-cover"
+                  priority={index === 0}
+                  height={300}
                   width={600}
                 />
                 <div className="absolute inset-0 flex items-end bg-black/40">
