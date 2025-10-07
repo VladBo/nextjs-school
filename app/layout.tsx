@@ -5,6 +5,8 @@ import { ReactNode } from 'react';
 
 import { Footer } from '@/features/footer/components';
 import { Header } from '@/features/header/components';
+import { fontVariables } from '@/lib/fonts';
+import { cn } from '@/lib/utils';
 
 import '../styles/globals.css';
 
@@ -21,7 +23,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <body
+        className={cn(
+          'group/body theme-blue overscroll-none font-sans text-foreground antialiased',
+          fontVariables
+        )}
+      >
         <div className="flex min-h-screen flex-col">
           <Header />
           <main className="flex-1">{children}</main>

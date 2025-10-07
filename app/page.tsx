@@ -11,13 +11,7 @@ const HomePage: FC = async () => {
     notFound();
   }
 
-  return (
-    <div className="flex min-h-screen flex-col">
-      <main className="flex-1">
-        {homepage.blocks && <BlockManager blocks={homepage.blocks} />}
-      </main>
-    </div>
-  );
+  return <>{homepage.blocks && <BlockManager blocks={homepage.blocks} />}</>;
 };
 
 export default HomePage;
