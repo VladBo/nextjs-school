@@ -1,7 +1,8 @@
-import { BookOpen, Code } from 'lucide-react';
+import { BookOpen, Code, Search } from 'lucide-react';
 import Link from 'next/link';
 
 import { ListItem } from '@/components/list-item';
+import { Input } from '@/components/ui/input';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -22,7 +23,7 @@ export const Header = async () => {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto flex items-center justify-between p-2 px-4 md:px-6">
+      <div className="container mx-auto flex items-center justify-between gap-4 p-2 px-4 md:px-6">
         <div className="flex items-center">
           <Link className="mr-6 flex items-center space-x-2" href="/">
             <Code className="size-6" />
@@ -78,6 +79,12 @@ export const Header = async () => {
               )}
             </NavigationMenuList>
           </NavigationMenu>
+        </div>
+        <div className="hidden max-w-sm flex-1 md:block">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Input placeholder="Search..." className="pl-9" type="search" />
+          </div>
         </div>
       </div>
     </header>
