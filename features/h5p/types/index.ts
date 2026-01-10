@@ -1,24 +1,22 @@
-export interface H5PQuiz {
+export interface StrapiMedia {
   id: number;
-  title?: string;
-  description?: string;
-  grade?: string;
-  subject?: string;
-  difficulty?: string;
-  estimatedTime?: number;
-  featured?: boolean;
-  thumbnail?: {
-    url?: string;
-    alternativeText?: string;
-  };
-  category?: {
-    id: number;
-    name?: string;
-  };
+  url: string;
+  name?: string;
+  mime?: string;
 }
 
-export interface H5PQuizzesResponse {
-  data: H5PQuiz[];
+export interface H5PContent {
+  id: number;
+  documentId: string;
+  title: string;
+  h5pFile: StrapiMedia;
+  createdAt?: string;
+  updatedAt?: string;
+  publishedAt?: string;
+}
+
+export interface H5PContentsResponse {
+  data: H5PContent[];
   meta?: {
     pagination?: {
       page: number;
@@ -29,6 +27,6 @@ export interface H5PQuizzesResponse {
   };
 }
 
-export interface H5PQuizResponse {
-  data: H5PQuiz;
+export interface H5PContentResponse {
+  data: H5PContent;
 }

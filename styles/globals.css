@@ -1,3 +1,5 @@
+@import './h5p.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

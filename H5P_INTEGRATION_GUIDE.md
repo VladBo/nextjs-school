@@ -1,243 +1,343 @@
 # H5P Integration Guide
 
-## Overview
+Complete guide for the H5P integration between Strapi CMS and Next.js frontend.
 
-This guide explains how to use the H5P integration between Strapi and Next.js for your school website.
-
-## Architecture
+## Architecture Overview
 
 ```
-┌─────────────────┐         ┌──────────────────┐         ┌─────────────────┐
-│   Strapi CMS    │         │   Next.js API    │         │  Next.js Pages  │
-│   (Backend)     │◄────────│   (Proxy)        │◄────────│   (Frontend)    │
-└─────────────────┘         └──────────────────┘         └─────────────────┘
-│                                                                  │
-│ - H5P Plugin                                                    │
-│ - H5P Editor                                                    │
-│ - Content Storage                                               │
-│ - Library Management                                  - Quiz Listing
-│                                                       - Quiz Player
-│                                                       - Filters
+┌─────────────────────────────────────────────────────────────────────────┐
+│  STRAPI CMS (strapi-school)                                             │
+│  ┌─────────────────────────────────────────────────────────────────┐   │
+│  │  H5P Plugin (@lumieducation/h5p-server)                         │   │
+│  │  - H5P Editor widget in admin panel                              │   │
+│  │  - Library management                                            │   │
+│  │  - Content storage and serving                                   │   │
+│  └─────────────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────────────┐   │
+│  │  h5p-content Collection Type                                     │   │
+│  │  - title, slug, description                                      │   │
+│  │  - h5pContent (JSON from H5P editor)                            │   │
+│  │  - h5pFile (uploaded .h5p package)                              │   │
+│  │  - grade, subject, difficulty, estimatedTime                    │   │
+│  │  - featured, thumbnail                                           │   │
+│  └─────────────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    │ REST API + H5P Assets
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│  NEXT.JS FRONTEND (nextjs-school)                                       │
+│  ┌─────────────────────────────────────────────────────────────────┐   │
+│  │  H5PPlayer Component (h5p-standalone)                            │   │
+│  │  - Fetches content from /api/h5p/[contentId]                    │   │
+│  │  - Renders interactive H5P content client-side                  │   │
+│  │  - Loading/error states with retry                               │   │
+│  └─────────────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────────────┐   │
+│  │  URL Rewrites (next.config.ts)                                   │   │
+│  │  - /h5p/core/* → Strapi H5P core assets                         │   │
+│  │  - /h5p/libraries/* → Strapi H5P libraries                      │   │
+│  │  - /h5p/content/* → Strapi H5P content files                    │   │
+│  └─────────────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────────────┘
 ```
 
-## How It Works
+## Strapi Setup
 
-### 1. **Content Creation in Strapi**
-Your mom will create H5P content directly in the Strapi admin panel using the built-in H5P editor. The editor provides:
-- Multiple Choice Questions
-- Drag and Drop
-- Fill in the Blanks
-- Interactive Videos
-- Image Hotspots
-- And 40+ other content types
+### 1. Content Type Schema
 
-### 2. **Content Storage**
-H5P content is stored in Strapi's database with:
-- Content parameters (JSON)
-- Metadata (title, description, etc.)
-- Library information
-- Assets (images, videos, etc.)
+The `h5p-content` collection type is configured with these fields:
 
-### 3. **Content Delivery**
-- Next.js fetches content metadata from Strapi API
-- H5P player loads the interactive content
-- Assets are served through Strapi or proxied through Next.js
+| Field         | Type    | Description                                       |
+| ------------- | ------- | ------------------------------------------------- |
+| title         | string  | Quiz title (required)                             |
+| slug          | uid     | URL-friendly identifier                           |
+| description   | text    | Quiz description                                  |
+| h5pContent    | json    | H5P editor content (custom field)                 |
+| h5pFile       | media   | Uploaded .h5p package file                        |
+| grade         | enum    | Grade level (1-11)                                |
+| subject       | enum    | Math, Science, History, English, Geography, Other |
+| difficulty    | enum    | Easy, Medium, Hard                                |
+| estimatedTime | integer | Minutes to complete (1-180)                       |
+| featured      | boolean | Show on homepage                                  |
+| thumbnail     | media   | Preview image                                     |
 
-## Setup Instructions
+### 2. Install H5P Quiz Libraries
 
-### Phase 1: Strapi Configuration (Already Completed ✓)
+Download from https://h5p.org/content-types-and-applications:
 
-The H5P plugin is already enabled in `/strapi-school/config/plugins.ts`
+- **H5P.MultiChoice** - Multiple choice questions
+- **H5P.Blanks** - Fill in the blanks
+- **H5P.DragQuestion** - Drag and drop
+- **H5P.TrueFalse** - True/false questions
 
-### Phase 2: Strapi Admin Setup
+Upload via Strapi admin or place in `/public/uploads/h5p/libraries/`
 
-1. **Start Strapi**:
-   ```bash
-   cd /Users/Vladyslav_Bondarchuk/Work/school/strapi-school
-   npm run develop
-   ```
+### 3. Configure Permissions
 
-2. **Access Admin Panel**:
-   - Navigate to `http://localhost:1337/admin`
-   - Log in with your credentials
+In Strapi Admin → Settings → Roles → Public:
 
-3. **Check H5P Plugin**:
-   - In the sidebar, you should see "H5P" or "Content" section
-   - The plugin provides the H5P editor interface
+- Enable `find`, `findOne` for h5p-content collection
+- Enable H5P plugin routes: `play`, `params`, `libraries`
 
-### Phase 3: Create H5P Content
+## Next.js Components
 
-1. **Navigate to H5P Content**:
-   - Click "H5P" or "Content" in the Strapi sidebar
-   - Click "Create new entry"
+### H5PPlayer (Primary)
 
-2. **Use H5P Editor**:
-   - You'll see the H5P content type selector
-   - Choose a content type (e.g., "Multiple Choice")
-   - Fill in the content using the editor
-   - Add title, description, and metadata
+Location: `features/h5p/components/h5p-player.tsx`
 
-3. **Download H5P Libraries** (First Time Only):
-   - The editor will prompt you to install H5P libraries
-   - These are downloaded from H5P.org
-   - Common libraries:
-     - H5P.MultiChoice
-     - H5P.DragQuestion
-     - H5P.Blanks
-     - H5P.ImageHotspots
+```tsx
+import { H5PPlayer } from '@/features/h5p/components';
 
-4. **Publish Content**:
-   - Click "Save" to store the content
-   - Make sure to publish it (toggle the published status)
+<H5PPlayer contentId="1" />;
+```
 
-### Phase 4: Configure Permissions
+Features:
 
-1. **Navigate to Settings → Roles → Public**:
-   - Find "H5P" plugin permissions
-   - Enable:
-     - `find` - List all H5P content
-     - `findOne` - Get specific H5P content
-     - `play` - Play H5P content
+- Uses `h5p-standalone` library
+- Dynamic import (avoids SSR issues)
+- Loading spinner with "Preparing interactive content"
+- Error state with retry button
+- Cleanup on unmount
 
-2. **Save permissions**
+### H5PIframePlayer (Fallback)
 
-### Phase 5: Test Integration
+Location: `features/h5p/components/h5p-iframe-player.tsx`
 
-1. **Start Next.js**:
-   ```bash
-   cd /Users/Vladyslav_Bondarchuk/Work/school/nextjs-school
-   npm run dev
-   ```
+```tsx
+import { H5PIframePlayer } from '@/features/h5p/components';
 
-2. **Navigate to Quizzes**:
-   - Go to `http://localhost:3000/quizzes`
-   - You should see any published H5P content
+<H5PIframePlayer contentId="1" title="Math Quiz" />;
+```
 
-## API Endpoints
+Features:
+
+- Embeds Strapi's `/h5p/embed/:id` endpoint
+- Simpler integration
+- Use when h5p-standalone has issues
+
+### QuizCard
+
+Displays quiz metadata in a card format with thumbnail, title, badges for grade/subject/difficulty.
+
+### QuizFilters
+
+Client-side filtering by grade (1-11) and subject with URL persistence.
+
+## API Routes
+
+### Next.js Proxy Endpoints
+
+| Route                          | Proxies To        | Purpose                                |
+| ------------------------------ | ----------------- | -------------------------------------- |
+| `/api/h5p/[contentId]`         | `/h5p/play/:id`   | Player data (scripts, styles, content) |
+| `/api/h5p/content/[contentId]` | `/h5p/params/:id` | Content parameters JSON                |
+
+### URL Rewrites (next.config.ts)
+
+| Source             | Destination               | Purpose              |
+| ------------------ | ------------------------- | -------------------- |
+| `/h5p/core/*`      | Strapi `/h5p/core/*`      | H5P core JS/CSS      |
+| `/h5p/libraries/*` | Strapi `/h5p/libraries/*` | H5P library files    |
+| `/h5p/content/*`   | Strapi `/h5p/content/*`   | H5P content assets   |
+| `/h5p/embed/:id`   | Strapi `/h5p/embed/:id`   | Iframe embed page    |
+| `/h5p/play/:id`    | Strapi `/h5p/play/:id`    | Direct play endpoint |
 
 ### Strapi H5P Plugin Endpoints
 
-The H5P plugin provides these endpoints:
+| Method | Path                         | Auth   | Description          |
+| ------ | ---------------------------- | ------ | -------------------- |
+| GET    | `/api/h5p-contents`          | Public | List all H5P content |
+| GET    | `/api/h5p-contents/:id`      | Public | Get single content   |
+| GET    | `/h5p/play/:id`              | Public | Get player data      |
+| GET    | `/h5p/params/:id`            | Public | Get content params   |
+| GET    | `/h5p/embed/:id`             | Public | Embed HTML page      |
+| GET    | `/h5p/libraries/:name/:file` | Public | Library files        |
+| POST   | `/h5p/new`                   | Admin  | Create content       |
+| PUT    | `/h5p/:id`                   | Admin  | Update content       |
+| DELETE | `/h5p/:id`                   | Admin  | Delete content       |
 
-#### Content API (Public):
-- `GET /api/h5p` - List all H5P content
-- `GET /api/h5p/:id` - Get specific H5P content
-- `GET /h5p/play/:id` - Play H5P content (returns player HTML/data)
+## Data Fetching
 
-#### Editor API (Admin only):
-- `POST /h5p/new` - Create new H5P content
-- `PUT /h5p/:id` - Update H5P content
-- `DELETE /h5p/:id` - Delete H5P content
+Location: `features/h5p/db/queries.ts`
 
-#### Library API:
-- `GET /h5p/libraries` - List installed libraries
-- `POST /h5p/libraries` - Install new library
+```typescript
+// List quizzes with optional filters
+const quizzes = await getQuizzes({ grade: '5', subject: 'Math' });
 
-### Next.js Proxy Endpoints (Already Created)
+// Get single quiz
+const quiz = await getQuizById('1');
 
-- `GET /api/h5p/[contentId]` - Proxies H5P play data
-- `GET /api/h5p/content/[contentId]` - Proxies H5P content parameters
+// Get featured quizzes (limit 6)
+const featured = await getFeaturedQuizzes();
+```
 
-## Content Type Structure
+All queries use `unstable_cache` with 1-hour revalidation and cache tags for ISR.
 
-The H5P plugin creates its own content type. You can extend it with custom fields:
+## Usage Examples
 
-### Option 1: Use Plugin Content Type As-Is
-The plugin's built-in content type includes:
-- `title` (string)
-- `h5pContent` (JSON) - The actual H5P content
-- `library` (string) - H5P library used
-- `params` (JSON) - Content parameters
+### Quiz Listing Page
 
-### Option 2: Create Extended Content Type
-If you want additional fields (grade, subject, etc.), create a new collection type that references H5P content:
+```tsx
+// app/quizzes/page.tsx
+import { QuizCard, QuizFilters } from '@/features/h5p/components';
+import { getQuizzes } from '@/features/h5p/db';
 
-```json
-{
-  "collectionName": "quizzes",
-  "info": {
-    "singularName": "quiz",
-    "pluralName": "quizzes"
-  },
-  "attributes": {
-    "title": { "type": "string", "required": true },
-    "description": { "type": "text" },
-    "h5pContent": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "plugin::h5p.content"
-    },
-    "grade": { "type": "enumeration", "enum": ["1"-"11"] },
-    "subject": { "type": "enumeration" },
-    "thumbnail": { "type": "media" }
-  }
+export default async function QuizzesPage({ searchParams }) {
+  const quizzes = await getQuizzes({
+    grade: searchParams.grade,
+    subject: searchParams.subject,
+  });
+
+  return (
+    <div className="grid lg:grid-cols-[280px_1fr]">
+      <QuizFilters />
+      <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+        {quizzes?.data.map((quiz) => <QuizCard key={quiz.id} quiz={quiz} />)}
+      </div>
+    </div>
+  );
 }
 ```
 
-## Updating Next.js Integration
+### Quiz Detail Page
 
-The current Next.js code expects a specific content type structure. Once you decide on your approach (Option 1 or 2), we'll update:
+```tsx
+// app/quizzes/[id]/page.tsx
+import { H5PPlayer } from '@/features/h5p/components';
+import { getQuizById } from '@/features/h5p/db';
 
-1. **Database Queries** (`features/h5p/db/queries.ts`):
-   - Update endpoints to match Strapi H5P plugin
-   - Map response structure correctly
+export default async function QuizPage({ params }) {
+  const quiz = await getQuizById(params.id);
 
-2. **Type Definitions** (`features/h5p/types/index.ts`):
-   - Match Strapi's H5P content type structure
+  return (
+    <div className="container max-w-4xl">
+      <h1>{quiz.data.title}</h1>
+      <H5PPlayer contentId={params.id} />
+    </div>
+  );
+}
+```
 
-3. **H5P Player** (`features/h5p/components/h5p-player.tsx`):
-   - Integrate with H5P player library
-   - Load required CSS/JS assets
+## Content Creation Workflow
 
-## H5P Libraries
+### Using Strapi H5P Editor
 
-Common H5P libraries for educational content:
+1. Open Strapi admin: `http://localhost:1337/admin`
+2. Navigate to Content Manager → H5P Content
+3. Click "Create new entry"
+4. Fill in metadata:
+   - Title, description
+   - Grade, subject, difficulty
+   - Estimated time
+   - Thumbnail image
+5. Use H5P Editor widget to create interactive content
+6. Save and Publish
 
-### Quizzes:
-- **Multiple Choice** - Single/multiple answer questions
-- **True/False Question** - Simple true/false
-- **Fill in the Blanks** - Text input questions
-- **Drag and Drop** - Match items
+### Alternative: Using Lumi Education
 
-### Interactive:
-- **Interactive Video** - Video with embedded questions
-- **Image Hotspots** - Clickable areas on images
-- **Timeline** - Chronological presentations
-- **Course Presentation** - Slideshow with interactive elements
+For offline content creation:
 
-### Games:
-- **Memory Game** - Card matching
-- **Drag the Words** - Text arrangement
-- **Mark the Words** - Highlight correct words
+1. Download Lumi: https://lumi.education
+2. Create H5P content in desktop app
+3. Export as `.h5p` file
+4. Upload to Strapi via `h5pFile` field
+
+See `H5P_SIMPLE_WORKFLOW.md` for detailed Lumi instructions.
+
+## Supported Content Types
+
+### Quiz Types (Primary)
+
+- Multiple Choice - Single/multiple answers
+- True/False - Binary questions
+- Fill in the Blanks - Text completion
+- Drag and Drop - Item matching
+- Drag the Words - Word placement
+- Mark the Words - Word identification
+
+### Interactive Types
+
+- Interactive Video - Videos with embedded questions
+- Course Presentation - Interactive slideshows
+- Image Hotspots - Clickable image areas
+
+## File Structure
+
+```
+nextjs-school/
+├── features/h5p/
+│   ├── components/
+│   │   ├── h5p-player.tsx        # h5p-standalone player
+│   │   ├── h5p-iframe-player.tsx # Iframe fallback
+│   │   ├── quiz-card.tsx         # Quiz listing card
+│   │   ├── quiz-filters.tsx      # Filter UI
+│   │   └── index.ts              # Exports
+│   ├── db/
+│   │   ├── queries.ts            # Data fetching
+│   │   └── index.ts
+│   └── types/
+│       └── index.ts              # TypeScript interfaces
+├── app/
+│   ├── api/h5p/
+│   │   ├── [contentId]/route.ts  # Play data proxy
+│   │   └── content/[contentId]/route.ts
+│   └── quizzes/
+│       ├── page.tsx              # Quiz listing
+│       └── [id]/page.tsx         # Quiz detail
+├── styles/
+│   ├── globals.css               # Imports h5p.css
+│   └── h5p.css                   # H5P-specific styles
+└── next.config.ts                # URL rewrites
+
+strapi-school/
+├── src/
+│   ├── api/h5p-content/          # Content type definition
+│   │   └── content-types/h5p-content/schema.json
+│   └── plugins/h5p/              # H5P plugin
+├── public/uploads/h5p/
+│   ├── libraries/                # H5P library files
+│   └── content/                  # H5P content files
+└── config/plugins.ts             # Plugin configuration
+```
 
 ## Troubleshooting
 
-### Issue: "H5P libraries not found"
-**Solution**: Download libraries from H5P.org through the Strapi admin editor
+### H5P Content Not Loading
 
-### Issue: "Content won't load in Next.js"
-**Solution**:
-1. Check Strapi API permissions
-2. Verify content is published
-3. Check browser console for CORS errors
-4. Ensure `NEXT_PUBLIC_STRAPI_URL` is set correctly
+1. Verify Strapi is running: `http://localhost:1337`
+2. Check H5P plugin is configured in `config/plugins.ts`
+3. Ensure content is published (not draft)
+4. Check browser console for CORS/network errors
 
-### Issue: "Editor not showing in Strapi"
-**Solution**:
-1. Restart Strapi server
-2. Check plugin is enabled in `config/plugins.ts`
-3. Clear browser cache
+### Player Shows Error
 
-## Next Steps
+1. Test API directly: `/api/h5p/[contentId]`
+2. Verify H5P libraries are installed
+3. Check Strapi permissions for H5P routes
 
-Once Strapi is configured and content is created:
+### Missing Styles/Scripts
 
-1. I'll update the Next.js database queries to use the actual H5P plugin API
-2. We'll implement the proper H5P player integration
-3. We'll test end-to-end content creation and display
+1. Verify rewrites in `next.config.ts`
+2. Test `/h5p/core/js/h5p.js` is accessible
+3. Check Network tab for 404 errors
+
+### Libraries Not Found
+
+1. Download from h5p.org
+2. Upload via Strapi admin
+3. Restart Strapi after installation
+
+## Environment Variables
+
+```bash
+# .env.local
+NEXT_PUBLIC_STRAPI_URL=http://localhost:1337
+```
 
 ## Resources
 
 - [H5P.org](https://h5p.org) - Official H5P website
-- [H5P Examples](https://h5p.org/content-types-and-applications) - Content type examples
-- [Strapi H5P Plugin](https://github.com/Lumieducation/strapi-plugin-h5p) - Plugin documentation
+- [H5P Content Types](https://h5p.org/content-types-and-applications) - Available types
+- [h5p-standalone](https://github.com/tunapanda/h5p-standalone) - Client-side player
+- [Lumi Education](https://lumi.education) - Desktop H5P editor
