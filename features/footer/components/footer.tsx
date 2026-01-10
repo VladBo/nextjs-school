@@ -1,9 +1,8 @@
 import Link from 'next/link';
-import { FC } from 'react';
 
 import { getFooterMenu } from '../db';
 
-export const Footer: FC = async () => {
+export async function Footer() {
   const footer = await getFooterMenu();
 
   return (

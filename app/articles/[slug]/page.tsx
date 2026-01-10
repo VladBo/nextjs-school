@@ -30,7 +30,7 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
   };
 }
 
-export const ArticlePage = async (props: PageProps) => {
+async function ArticlePage(props: PageProps) {
   const params = await props.params;
   const article = await getArticleBySlug(params.slug);
 

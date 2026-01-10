@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   generator: 'v0.dev',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: ReactNode;
@@ -30,8 +30,10 @@ export default function RootLayout({
         )}
       >
         <div className="flex min-h-screen flex-col">
+          {/* @ts-expect-error Async Server Component */}
           <Header />
           <main className="flex-1">{children}</main>
+          {/* @ts-expect-error Async Server Component */}
           <Footer />
         </div>
         <Analytics />

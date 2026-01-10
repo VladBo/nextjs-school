@@ -1,7 +1,6 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  // @ts-expect-error: 'eslint' is not a valid Next.js config in v16+
   eslint: {
     ignoreDuringBuilds: true,
   },

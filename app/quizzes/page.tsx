@@ -1,6 +1,5 @@
 import { QuizCard, QuizFilters } from '@/features/h5p/components';
 import { getQuizzes } from '@/features/h5p/db';
-import { H5PQuiz } from '@/features/h5p/types';
 
 export default async function QuizzesPage({
   searchParams,
@@ -29,7 +28,7 @@ export default async function QuizzesPage({
         </aside>
 
         <main>
-          {!quizzes?.data || quizzes.data.length === 0 ? (
+          {!quizzes || !quizzes.data || quizzes.data.length === 0 ? (
             <div className="rounded-lg border bg-card p-12 text-center">
               <h3 className="mb-2 text-lg font-semibold">No quizzes found</h3>
               <p className="text-sm text-muted-foreground">
@@ -40,7 +39,7 @@ export default async function QuizzesPage({
             </div>
           ) : (
             <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-              {quizzes.data.map((quiz: H5PQuiz) => (
+              {quizzes.data.map((quiz) => (
                 <QuizCard key={quiz.id} quiz={quiz} />
               ))}
             </div>

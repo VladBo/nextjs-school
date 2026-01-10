@@ -1,52 +1,65 @@
 import { unstable_cache } from 'next/cache';
+import qs from 'qs';
 
-import { client } from '@/lib/api';
+import { H5PQuizResponse, H5PQuizzesResponse } from '../types';
+
+const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337';
+
+async function fetchFromStrapi<T>(
+  endpoint: string,
+  query?: Record<string, unknown>
+): Promise<T | null> {
+  const queryString = query ? `?${qs.stringify(query, { encodeValuesOnly: true })}` : '';
+  const url = `${STRAPI_URL}/api${endpoint}${queryString}`;
+
+  try {
+    const response = await fetch(url, {
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    if (!response.ok) {
+      console.error(`Strapi fetch error: ${response.status} ${response.statusText}`);
+      return null;
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error('Strapi fetch error:', error);
+    return null;
+  }
+}
 
 export const getQuizzes = unstable_cache(
-  async (filters?: { grade?: string; subject?: string }) => {
-    const { data } = await client.GET('/h5p-contents', {
-      params: {
-        query: {
-          populate: ['thumbnail', 'category'],
-          filters: {
-            ...(filters?.grade && { grade: { $eq: filters.grade } }),
-            ...(filters?.subject && { subject: { $eq: filters.subject } }),
-          },
-        },
+  async (filters?: { grade?: string; subject?: string }): Promise<H5PQuizzesResponse | null> => {
+    return fetchFromStrapi<H5PQuizzesResponse>('/h5p-contents', {
+      populate: ['thumbnail', 'category'],
+      filters: {
+        ...(filters?.grade && { grade: { $eq: filters.grade } }),
+        ...(filters?.subject && { subject: { $eq: filters.subject } }),
       },
     });
-    return data;
   },
   ['quizzes'],
   { tags: ['h5p-contents'], revalidate: 3600 }
 );
 
 export const getQuizById = unstable_cache(
-  async (id: string) => {
-    const { data } = await client.GET('/h5p-contents/{id}', {
-      params: {
-        path: { id },
-        query: { populate: ['thumbnail', 'category'] },
-      },
+  async (id: string): Promise<H5PQuizResponse | null> => {
+    return fetchFromStrapi<H5PQuizResponse>(`/h5p-contents/${id}`, {
+      populate: ['thumbnail', 'category'],
     });
-    return data;
   },
   ['quiz'],
   { tags: ['h5p-content'], revalidate: 3600 }
 );
 
 export const getFeaturedQuizzes = unstable_cache(
-  async () => {
-    const { data } = await client.GET('/h5p-contents', {
-      params: {
-        query: {
-          populate: ['thumbnail'],
-          filters: { featured: { $eq: true } },
-          pagination: { limit: 6 },
-        },
-      },
+  async (): Promise<H5PQuizzesResponse | null> => {
+    return fetchFromStrapi<H5PQuizzesResponse>('/h5p-contents', {
+      populate: ['thumbnail'],
+      filters: { featured: { $eq: true } },
+      pagination: { limit: 6 },
     });
-    return data;
   },
   ['featured-quizzes'],
   { tags: ['h5p-contents'], revalidate: 3600 }

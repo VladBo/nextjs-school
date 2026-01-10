@@ -6,16 +6,15 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { H5PPlayer } from '@/features/h5p/components';
 import { getQuizById } from '@/features/h5p/db';
-import { H5PQuiz } from '@/features/h5p/types';
 
 export default async function QuizPage({ params }: { params: { id: string } }) {
-  const quiz = await getQuizById(params.id);
+  const response = await getQuizById(params.id);
 
-  if (!quiz?.data) {
+  if (!response || !response.data) {
     notFound();
   }
 
-  const quizData = quiz.data as H5PQuiz;
+  const quizData = response.data;
 
   return (
     <div className="container mx-auto max-w-4xl px-4 py-12">
