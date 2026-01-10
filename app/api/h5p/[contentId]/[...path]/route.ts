@@ -1,6 +1,8 @@
 import JSZip from 'jszip';
 import { NextRequest, NextResponse } from 'next/server';
 
+import { logger } from '@/lib/logger';
+
 const STRAPI_URL =
   process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337';
 
@@ -20,6 +22,7 @@ async function getH5PZip(contentId: string): Promise<JSZip | null> {
     );
 
     if (!response.ok) {
+      logger.error('Failed to fetch H5P content info:', response.status);
       return null;
     }
 
@@ -27,6 +30,7 @@ async function getH5PZip(contentId: string): Promise<JSZip | null> {
     const h5pFileUrl = data.data?.h5pFile?.url;
 
     if (!h5pFileUrl) {
+      logger.error('No H5P file URL found for content:', contentId);
       return null;
     }
 
@@ -37,6 +41,7 @@ async function getH5PZip(contentId: string): Promise<JSZip | null> {
 
     const fileResponse = await fetch(fullUrl);
     if (!fileResponse.ok) {
+      logger.error('Failed to fetch H5P file:', fullUrl);
       return null;
     }
 
@@ -47,7 +52,8 @@ async function getH5PZip(contentId: string): Promise<JSZip | null> {
     h5pCache.set(contentId, zip);
 
     return zip;
-  } catch {
+  } catch (error) {
+    logger.error('Error loading H5P file:', error);
     return null;
   }
 }

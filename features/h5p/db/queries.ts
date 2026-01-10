@@ -1,6 +1,8 @@
 import { unstable_cache } from 'next/cache';
 import qs from 'qs';
 
+import { logger } from '@/lib/logger';
+
 import { H5PContentResponse, H5PContentsResponse } from '../types';
 
 const STRAPI_URL =
@@ -21,11 +23,15 @@ async function fetchFromStrapi<T>(
     });
 
     if (!response.ok) {
+      logger.error(
+        `Strapi fetch error: ${response.status} ${response.statusText}`
+      );
       return null;
     }
 
     return response.json();
-  } catch {
+  } catch (error) {
+    logger.error('Strapi fetch error:', error);
     return null;
   }
 }

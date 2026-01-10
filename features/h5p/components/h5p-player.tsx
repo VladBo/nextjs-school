@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from 'react';
 
+import { logger } from '@/lib/logger';
+
 interface H5PPlayerProps {
   contentId: string;
   title?: string;
@@ -45,6 +47,7 @@ export function H5PPlayer({ contentId, title }: H5PPlayerProps) {
 
         setLoading(false);
       } catch (err) {
+        logger.error('H5P initialization error:', err);
         if (mounted) {
           setError(
             err instanceof Error
