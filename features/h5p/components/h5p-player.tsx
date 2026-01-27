@@ -35,6 +35,7 @@ export function H5PPlayer({ contentId, title }: H5PPlayerProps) {
 
         h5pInstanceRef.current = new H5P(containerRef.current, {
           h5pJsonPath: h5pPath,
+          librariesPath: '/api/h5p/libraries',
           frameJs: '/h5p/frame.bundle.js',
           frameCss: '/h5p/styles/h5p.css',
           frame: true,
