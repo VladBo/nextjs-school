@@ -73,6 +73,62 @@ The H5P libraries in `/public/uploads/h5p/libraries/` are **incomplete stubs**:
 
 ---
 
+## Phase 0: Console Debugging (MANDATORY FIRST STEP)
+
+**CRITICAL**: Before making ANY changes or running ANY other diagnostic steps, you MUST check the browser console using the appropriate MCP tool:
+
+### Tool Selection by Application
+
+- **For Strapi (localhost:1337)**: Use `io.github.ChromeDevTools/chrome-devtools-mcp` ONLY
+
+  - Strapi is NOT a Next.js application
+  - next-devtools cannot help with Strapi at all
+  - Chrome DevTools MCP is the only tool for Strapi debugging
+
+- **For Next.js (localhost:3000)**: Use `next-devtools` MCP tools and `io.github.ChromeDevTools/chrome-devtools-mcp`
+  - next-devtools is specifically designed for Next.js applications
+  - Has built-in MCP integration with Next.js dev server
+  - Can access Next.js runtime diagnostics, routes, and errors
+
+### Workflow
+
+1. **Identify which application** needs debugging:
+
+   - Strapi admin/backend issues → Use Chrome DevTools MCP
+   - Next.js frontend issues → Use next-devtools and Chrome DevTools MCP
+
+2. **Run console check** using the appropriate tool:
+
+   - Navigate to the relevant page (H5P editor for Strapi, app pages for Next.js)
+   - Capture all console errors, warnings, and logs
+   - Focus on JavaScript errors related to H5P initialization
+
+3. **Document findings** before proceeding to other phases
+
+4. **DO NOT**:
+   - Use next-devtools for Strapi
+   - Skip this step and jump to code changes
+
+**FIRST ACTION**: Based on the issue location, use the correct MCP tool to check browser console. Do NOT ask the user for permission - just run it.
+
+---
+
+## Terminal Management
+
+**CRITICAL**: Exactly two terminals total. One for Strapi, one for Next.js.
+
+**Folders**:
+
+- **FRONTEND (Next.js)** → `~/Work/school/nextjs-school`
+- **BACKEND (Strapi)** → `~/Work/school/strapi-school`
+
+### Admin Credentials (Local Only)
+
+- **Do NOT store credentials in this repository.**
+- When running browser automation, use environment variables (`ADMIN_EMAIL`, `ADMIN_PASSWORD`) from git-ignored `.env` in strapi-school folder.
+
+---
+
 ## Strapi H5P Plugin Structure
 
 **Location**: `/Users/Vladyslav_Bondarchuk/Work/school/strapi-school/src/plugins/h5p/`
@@ -241,6 +297,14 @@ Option 3: **H5P.org Download**
 ---
 
 ## Implementation Plan
+
+### Phase 0: Chrome DevTools MCP Console Check (MANDATORY FIRST STEP)
+
+- [ ] **FIRST ACTION:** Start Strapi using console and use io.github.ChromeDevTools/chrome-devtools-mcp to open the Strapi admin H5P editor page
+- [ ] **ONLY** check the console via io.github.ChromeDevTools/chrome-devtools-mcp
+- [ ] **Do NOT** use next-devtools, curl, or any other method before the Chrome MCP console check
+- [ ] **Run the io.github.ChromeDevTools/chrome-devtools-mcp console check yourself (no user prompt)**
+- [ ] Continue only after reviewing io.github.ChromeDevTools/chrome-devtools-mcp console output
 
 > Based on https://lumieducation.github.io/H5P-Nodejs-library/documents/Examples.REST_Example.html
 
@@ -500,10 +564,12 @@ Handle file uploads during editing:
 
 #### Task 5.2: Test Content Creation
 
-1. Select a content type (e.g., Multiple Choice)
+1. Select a content type (Multiple Choice)
 2. Fill in the content form
 3. Click Save
 4. Verify content saves to database
+5. Repeat for Quiz (Question Set)
+6. Repeat for True/False
 
 #### Task 5.3: Test Content Playback
 
@@ -575,6 +641,8 @@ Document how to use the H5P editor in Strapi.
 
 - [ ] Test editor loading in Strapi admin
 - [ ] Test content creation (Multiple Choice)
+- [ ] Test content creation (Quiz / Question Set)
+- [ ] Test content creation (True/False)
 - [ ] Test content editing
 - [ ] Test content playback in Strapi
 - [ ] Test content playback on Next.js frontend
@@ -674,7 +742,120 @@ The H5P editor is working when:
 
 ---
 
+## Implementation Status Update (2026-01-26)
+
+### Verified Working ✅
+
+1. **H5P Player on Next.js Frontend**: WORKING
+
+   - `h5p-standalone` library renders H5P content correctly
+   - Tested with "test quiz" entry (QuestionSet with Multiple Choice)
+   - Content fetched via `/api/h5p/[contentId]` endpoint
+
+2. **H5P Editor UI in Strapi**: LOADS
+
+   - Editor iframe loads and displays content type selector
+   - Can select content types (Multiple Choice, QuestionSet, etc.)
+   - Can fill in question and answer forms
+
+3. **H5P Libraries**: More complete than documented
+   - Libraries in `public/uploads/h5p/libraries/` contain actual JS/CSS files
+   - Not just stubs as previously thought
+
+### Critical Issue Found ❌
+
+**H5P Content Save Flow is BROKEN**
+
+When creating new H5P content in Strapi admin:
+
+1. User selects content type (e.g., Multiple Choice)
+2. User fills in question/answers
+3. User clicks "Save" in Strapi
+4. Entry is created BUT `h5pContent` field is **NULL**
+
+**Evidence:**
+
+```json
+// API response from /api/h5p-contents
+[
+  {
+    "id": 1,
+    "title": "test quiz",
+    "h5pContent": { "library": "H5P.QuestionSet 1.20", "contentId": 2841334329 }
+  }, // OLD - has data
+  { "id": 5, "title": "dadsadas", "h5pContent": null }, // NEW - null
+  { "id": 7, "title": "Capital Cities Quiz", "h5pContent": null } // NEW - null
+]
+```
+
+**Root Cause Analysis:**
+
+- The postMessage communication between the H5P editor iframe and Strapi admin panel is not completing
+- The `content/` directory is empty: `public/uploads/h5p/content/` has no saved content
+- The "test quiz" entry works because it was created via a different method (likely file upload)
+
+### Root Cause Identified (2026-01-26)
+
+**The form submit interception doesn't work with Strapi 5**
+
+The `h5p-editor-field.tsx` component tries to intercept native HTML form `submit` events:
+
+```javascript
+document.addEventListener('submit', handleSubmitCapture, true);
+```
+
+But **Strapi 5 doesn't use native form submissions**. It uses:
+
+- React state management
+- Direct API calls via `strapi.documents()`
+- No traditional `<form>` submit events
+
+**Evidence:**
+
+- No `/api/h5p/save` requests appear in network tab when clicking Save
+- No console errors related to H5P save
+- The `handleSubmitCapture` function never fires
+
+### Fix Required
+
+**Option A: Use Strapi's `beforeSubmit` lifecycle hook** (Recommended)
+
+Custom fields in Strapi can define a `beforeSubmit` callback that runs before the entry is saved. This is the proper way to capture H5P content before Strapi saves.
+
+```typescript
+// In h5p-editor-field.tsx
+const H5PEditorField = {
+  // ... existing code
+
+  // Add beforeSubmit handler that Strapi calls
+  async beforeSubmit(value: string, attribute: any) {
+    // Trigger H5P save and wait for response
+    const h5pContent = await triggerH5PSave();
+    return JSON.stringify(h5pContent);
+  },
+};
+```
+
+**Option B: Use a "Save H5P" button**
+
+Add a separate button inside the H5P editor field that explicitly saves the H5P content to the server, then updates the field value. Less elegant but more explicit.
+
+**Option C: Auto-save on content change**
+
+Listen for changes in the H5P editor iframe and automatically save to server, keeping the field value synced. May have performance implications.
+
+### Next Steps
+
+1. [ ] Research Strapi 5 custom field lifecycle hooks (`beforeSubmit`, `validate`)
+2. [ ] Modify `h5p-editor-field.tsx` to use proper Strapi integration
+3. [ ] Test the save flow end-to-end
+4. [ ] Verify h5pContent is populated after save
+
+---
+
 ## Implementation Plan Addendum (2026-01-25)
+
+**Execution rule:** Continue until all items in this plan (and addendum) are implemented and verified.
 
 ### A. Full-Width Editor Iframe (Admin + Editor Page)
 
@@ -684,11 +865,27 @@ The H5P editor is working when:
 
 ### B. TypeScript Sources + Autogenerated Dist
 
-- [ ] Confirm Strapi v5 TS support for plugin server code and admin TSX
-- [ ] Create `strapi-school/src/plugins/h5p/admin/src` (TSX) and `server/src` (TS)
-- [ ] Move logic from `dist/` into TS/TSX sources
-- [ ] Add build step to generate `dist/` from sources (Strapi build or `tsc`/`tsup`)
+- [x] Confirm Strapi v5 TS support for plugin server code and admin TSX
+- [x] Create `strapi-school/src/plugins/h5p/admin/src` (TSX) and `server/src` (TS)
+- [x] Move logic from `dist/` into TS/TSX sources
+- [x] Add build step to generate `dist/` from sources (Strapi build or `tsc`/`tsup`)
+- [x] Follow Strapi TS plugin guide: run `npm install` in plugin dir, `npm run build`, use `strapi develop --watch-admin`
 - [ ] Keep `dist/` ignored in git; ensure CI/build produces it
+- [x] Use proper TypeScript/React syntax instead of compiled JSX runtime output
+- [x] Apply `vercel-react-best-practices` skill for React code quality
+
+### B.1 React Best Practices (vercel-react-best-practices skill)
+
+**IMPORTANT:** When writing or reviewing React code in this plugin, use the `vercel-react-best-practices` skill. This ensures code follows Vercel's performance optimization guidelines.
+
+Key patterns applied to admin components:
+
+- [x] `advanced-event-handler-refs` - Store event handlers in refs for stable subscriptions (used in `h5p-editor-field.tsx` for message event handling)
+- [x] `rerender-dependencies` - Use primitive dependencies in effects (empty deps array with refs pattern)
+- [x] Proper TypeScript interfaces instead of `any` types
+- [x] `useMemo` for expensive computations (JSON parsing)
+- [x] `rendering-conditional-render` - Use ternary operators for conditional rendering where applicable
+- [ ] `bundle-dynamic-imports` - Consider dynamic imports for heavy components if needed
 
 ### C. Multi Choice Selection Error
 
@@ -698,5 +895,152 @@ The H5P editor is working when:
 - [ ] Normalize file uploads to the H5P server format (`name`, `tempFilePath`, `data`)
 - [ ] Validate Multiple Choice selection in iframe with browser console + network
 
-_Last Updated: January 2025_
+### D. Browser Console Validation (Chrome DevTools MCP)
+
+- [ ] Use io.github.ChromeDevTools/chrome-devtools-mcp to open Strapi admin H5P editor page
+- [ ] Do not ask permission to use io.github.ChromeDevTools/chrome-devtools-mcp
+- [ ] Check console for module load errors or MIME type errors
+- [ ] Confirm no errors after TS build changes
+
+---
+
+## Phase 7: Strapi H5P Editor Improvements (2026-01-27)
+
+**Based on comparison with Drupal 7 H5P module behavior at http://157.230.111.129**
+
+### Drupal 7 H5P Editor Reference
+
+The Drupal 7 H5P module provides the ideal user experience:
+
+1. **No separate file upload field** - H5P content is managed entirely within the iframe editor
+2. **Edit existing content** - When editing a node, the H5P editor loads the existing content for editing
+3. **Single save button** - The node's Save button saves everything including H5P content
+4. **Content type selector only for new content** - Shows editor with existing content, not "Create Content" tab
+
+### Current Strapi Issues (Identified)
+
+| Issue           | Current Behavior                   | Expected (Drupal) Behavior          |
+| --------------- | ---------------------------------- | ----------------------------------- |
+| h5pFile field   | Separate media upload field        | Not needed - iframe handles uploads |
+| Edit existing   | Shows "Create Content" selector    | Shows existing content in editor    |
+| Save button     | Separate "Save H5P Content" button | Save with main Strapi Save          |
+| Content loading | Content ID shown but not loaded    | Content loaded and editable         |
+
+### Task 7.1: Remove h5pFile Field
+
+**Priority: HIGH**
+
+The h5pFile media field is redundant because:
+
+- The H5P editor iframe already has "Upload" tab for .h5p files
+- Having two upload methods is confusing
+- Drupal only has the iframe editor, no separate file field
+
+**Action:**
+
+- [ ] Remove `h5pFile` attribute from `src/api/h5p-content/content-types/h5p-content/schema.json`
+- [ ] Update Next.js player to use h5pContent field for rendering
+- [ ] Migrate existing h5pFile content to h5pContent if needed
+
+### Task 7.2: Load Existing Content for Editing
+
+**Priority: CRITICAL**
+
+When editing an existing H5P content entry:
+
+- Current: Shows "Create Content" tab with content type selector
+- Expected: Shows the existing content in the editor for modification
+
+**Root Cause:** The editor iframe URL doesn't include the contentId for existing content.
+
+**Action:**
+
+- [ ] Modify `h5p-editor-field.tsx` to pass contentId to iframe when editing existing content
+- [ ] Update `/api/h5p/editor-page/:contentId` route to load existing content
+- [ ] The H5P editor should receive content parameters via `H5PEditor.render()` with existing contentId
+- [ ] Test: Open existing content → should show editor with loaded content, not content type selector
+
+### Task 7.3: Remove Separate Save Button
+
+**Priority: HIGH**
+
+Drupal behavior: Single "Save" button saves the entire node including H5P content.
+
+**Action:**
+
+- [ ] Remove "Save H5P Content" button from the field UI
+- [ ] Implement Strapi's `beforeSubmit` hook for custom fields to capture H5P content
+- [ ] When Strapi's main Save is clicked:
+  1. Trigger H5P editor's internal save via postMessage
+  2. Wait for H5P to return content data
+  3. Store in h5pContent field
+  4. Continue with Strapi save
+- [ ] Handle the async nature of H5P save (may need loading state)
+
+**Technical approach:**
+
+```typescript
+// In h5p-editor-field.tsx
+// Use Strapi's field lifecycle hooks instead of DOM event interception
+
+// Option A: beforeSubmit hook (if available in Strapi 5)
+const beforeSubmit = async () => {
+  const h5pData = await triggerH5PSaveAndWait();
+  return JSON.stringify(h5pData);
+};
+
+// Option B: Form submission interception via Strapi's form context
+// Listen to form state changes and trigger save before submission
+```
+
+### Task 7.4: Update Content Type Schema
+
+**Priority: MEDIUM**
+
+Simplify the h5p-content schema:
+
+```json
+{
+  "attributes": {
+    "title": { "type": "string", "required": true },
+    "h5pContent": {
+      "type": "json",
+      "customField": "plugin::h5p.h5p-editor"
+    }
+    // REMOVE: h5pFile field
+  }
+}
+```
+
+### Task 7.5: Update Next.js Player
+
+**Priority: HIGH**
+
+After removing h5pFile, update the player to work with h5pContent:
+
+- [ ] Modify `/api/h5p/[contentId]/[...path]/route.ts` to serve content from Strapi's H5P storage
+- [ ] The h5pContent field contains `{ library, contentId }` - use contentId to fetch from `/h5p/content/:contentId`
+- [ ] Update `getH5PContentById` to not populate h5pFile
+- [ ] Update quizzes pages to check h5pContent instead of h5pFile
+
+### Implementation Order
+
+1. **Task 7.2** - Load existing content (most critical UX issue)
+2. **Task 7.3** - Remove separate save button (Drupal parity)
+3. **Task 7.1** - Remove h5pFile field (cleanup)
+4. **Task 7.5** - Update Next.js player (after schema change)
+5. **Task 7.4** - Update schema (final cleanup)
+
+### Success Criteria
+
+The H5P editor is working like Drupal when:
+
+- [ ] Creating new content: Shows content type selector, create content, single Save saves everything
+- [ ] Editing existing content: Shows the content in editor for modification, single Save updates it
+- [ ] No separate h5pFile field or "Save H5P Content" button
+- [ ] Content plays correctly on Next.js frontend after save
+
+---
+
+_Last Updated: January 2026_
 _Created for AI assistant context in future sessions_
