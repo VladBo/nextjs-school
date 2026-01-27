@@ -1,10 +1,3 @@
-export interface StrapiMedia {
-  id: number;
-  url: string;
-  name?: string;
-  mime?: string;
-}
-
 export interface H5PContentData {
   library: string;
   contentId: number;
@@ -14,7 +7,6 @@ export interface H5PContent {
   id: number;
   documentId: string;
   title: string;
-  h5pFile: StrapiMedia | null;
   h5pContent: H5PContentData | null;
   createdAt?: string;
   updatedAt?: string;

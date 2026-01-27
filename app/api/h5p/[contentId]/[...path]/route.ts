@@ -1,62 +1,9 @@
-import JSZip from 'jszip';
 import { NextRequest, NextResponse } from 'next/server';
 
 import { logger } from '@/lib/logger';
 
 const STRAPI_URL =
   process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337';
-
-// Cache extracted h5p files in memory
-const h5pCache = new Map<string, JSZip>();
-
-async function getH5PZip(contentId: string): Promise<JSZip | null> {
-  // Check cache first
-  if (h5pCache.has(contentId)) {
-    return h5pCache.get(contentId)!;
-  }
-
-  try {
-    // Fetch content info from Strapi
-    const response = await fetch(
-      `${STRAPI_URL}/api/h5p-contents/${contentId}?populate=h5pFile`
-    );
-
-    if (!response.ok) {
-      logger.error('Failed to fetch H5P content info:', response.status);
-      return null;
-    }
-
-    const data = await response.json();
-    const h5pFileUrl = data.data?.h5pFile?.url;
-
-    if (!h5pFileUrl) {
-      logger.error('No H5P file URL found for content:', contentId);
-      return null;
-    }
-
-    // Fetch the .h5p file
-    const fullUrl = h5pFileUrl.startsWith('http')
-      ? h5pFileUrl
-      : `${STRAPI_URL}${h5pFileUrl}`;
-
-    const fileResponse = await fetch(fullUrl);
-    if (!fileResponse.ok) {
-      logger.error('Failed to fetch H5P file:', fullUrl);
-      return null;
-    }
-
-    const arrayBuffer = await fileResponse.arrayBuffer();
-    const zip = await JSZip.loadAsync(arrayBuffer);
-
-    // Cache for future requests
-    h5pCache.set(contentId, zip);
-
-    return zip;
-  } catch (error) {
-    logger.error('Error loading H5P file:', error);
-    return null;
-  }
-}
 
 function getContentType(filename: string): string {
   const ext = filename.split('.').pop()?.toLowerCase();
@@ -88,40 +35,41 @@ export async function GET(
   const { contentId, path } = await params;
   const filePath = path.join('/');
 
-  const zip = await getH5PZip(contentId);
-  if (!zip) {
-    return NextResponse.json(
-      { error: 'H5P content not found' },
-      { status: 404 }
-    );
-  }
+  try {
+    // Proxy to Strapi's H5P content endpoint
+    const strapiUrl = `${STRAPI_URL}/api/h5p/content/${contentId}/${filePath}`;
 
-  // Try to find the file in the zip
-  const file = zip.file(filePath);
-  if (!file) {
-    // Try with 'content/' prefix for content files
-    const contentFile = zip.file(`content/${filePath}`);
-    if (!contentFile) {
+    const response = await fetch(strapiUrl, {
+      headers: {
+        Accept: '*/*',
+      },
+    });
+
+    if (!response.ok) {
+      logger.error(
+        `Failed to fetch H5P content from Strapi: ${response.status} ${strapiUrl}`
+      );
       return NextResponse.json(
-        { error: 'File not found in H5P package' },
-        { status: 404 }
+        { error: 'H5P content not found' },
+        { status: response.status }
       );
     }
 
-    const content = await contentFile.async('arraybuffer');
-    return new NextResponse(content, {
+    const contentType =
+      response.headers.get('Content-Type') || getContentType(filePath);
+    const data = await response.arrayBuffer();
+
+    return new NextResponse(data, {
       headers: {
-        'Content-Type': getContentType(filePath),
+        'Content-Type': contentType,
         'Cache-Control': 'public, max-age=31536000',
       },
     });
+  } catch (error) {
+    logger.error('Error fetching H5P content:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch H5P content' },
+      { status: 500 }
+    );
   }
-
-  const content = await file.async('arraybuffer');
-  return new NextResponse(content, {
-    headers: {
-      'Content-Type': getContentType(filePath),
-      'Cache-Control': 'public, max-age=31536000',
-    },
-  });
 }

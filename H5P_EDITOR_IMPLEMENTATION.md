@@ -926,7 +926,7 @@ The Drupal 7 H5P module provides the ideal user experience:
 | Save button     | Separate "Save H5P Content" button | Save with main Strapi Save          |
 | Content loading | Content ID shown but not loaded    | Content loaded and editable         |
 
-### Task 7.1: Remove h5pFile Field
+### Task 7.1: Remove h5pFile Field ✅ COMPLETED
 
 **Priority: HIGH**
 
@@ -936,13 +936,13 @@ The h5pFile media field is redundant because:
 - Having two upload methods is confusing
 - Drupal only has the iframe editor, no separate file field
 
-**Action:**
+**Completed Actions (2026-01-27):**
 
-- [ ] Remove `h5pFile` attribute from `src/api/h5p-content/content-types/h5p-content/schema.json`
-- [ ] Update Next.js player to use h5pContent field for rendering
-- [ ] Migrate existing h5pFile content to h5pContent if needed
+- [x] Remove `h5pFile` attribute from `src/api/h5p-content/content-types/h5p-content/schema.json`
+- [x] Update Next.js player to use h5pContent field for rendering
+- [x] Update types, queries, and pages in Next.js
 
-### Task 7.2: Load Existing Content for Editing
+### Task 7.2: Load Existing Content for Editing ✅ COMPLETED
 
 **Priority: CRITICAL**
 
@@ -951,53 +951,44 @@ When editing an existing H5P content entry:
 - Current: Shows "Create Content" tab with content type selector
 - Expected: Shows the existing content in the editor for modification
 
-**Root Cause:** The editor iframe URL doesn't include the contentId for existing content.
+**Completed Actions (2026-01-27):**
 
-**Action:**
+- [x] Modified `editor.ts` renderer to accept contentId option
+- [x] Updated service to pass contentId through state to renderer
+- [x] The renderer now injects `nodeVersionId` into the integration object
+- [x] Editor template correctly loads existing content when contentId is provided
 
-- [ ] Modify `h5p-editor-field.tsx` to pass contentId to iframe when editing existing content
-- [ ] Update `/api/h5p/editor-page/:contentId` route to load existing content
-- [ ] The H5P editor should receive content parameters via `H5PEditor.render()` with existing contentId
-- [ ] Test: Open existing content → should show editor with loaded content, not content type selector
+**Technical Details:**
 
-### Task 7.3: Remove Separate Save Button
+- Added `currentRenderContentId` to service state
+- Modified `renderEditor()` to set state before calling `getEditor().render()`
+- Modified `renderEditorPage()` to inject `nodeVersionId` into `integration.editor`
+
+### Task 7.3: Remove Separate Save Button ✅ COMPLETED
 
 **Priority: HIGH**
 
 Drupal behavior: Single "Save" button saves the entire node including H5P content.
 
-**Action:**
+**Completed Actions (2026-01-27):**
 
-- [ ] Remove "Save H5P Content" button from the field UI
-- [ ] Implement Strapi's `beforeSubmit` hook for custom fields to capture H5P content
-- [ ] When Strapi's main Save is clicked:
-  1. Trigger H5P editor's internal save via postMessage
-  2. Wait for H5P to return content data
-  3. Store in h5pContent field
-  4. Continue with Strapi save
-- [ ] Handle the async nature of H5P save (may need loading state)
+- [x] Removed "Save H5P Content" button from the field UI
+- [x] Implemented form submission interception to save H5P content before Strapi save
+- [x] Added global save function registry for H5P fields
+- [x] H5P content now saves automatically when Strapi's main Save is clicked
 
-**Technical approach:**
+**Technical approach implemented:**
 
-```typescript
-// In h5p-editor-field.tsx
-// Use Strapi's field lifecycle hooks instead of DOM event interception
+- Register save functions globally via `window.__h5pSaveFunctions` Map
+- Intercept form submit events in capture phase
+- Save all H5P content before allowing form submission
+- Show saving status in field UI
 
-// Option A: beforeSubmit hook (if available in Strapi 5)
-const beforeSubmit = async () => {
-  const h5pData = await triggerH5PSaveAndWait();
-  return JSON.stringify(h5pData);
-};
-
-// Option B: Form submission interception via Strapi's form context
-// Listen to form state changes and trigger save before submission
-```
-
-### Task 7.4: Update Content Type Schema
+### Task 7.4: Update Content Type Schema ✅ COMPLETED
 
 **Priority: MEDIUM**
 
-Simplify the h5p-content schema:
+Simplified the h5p-content schema:
 
 ```json
 {
@@ -1007,29 +998,29 @@ Simplify the h5p-content schema:
       "type": "json",
       "customField": "plugin::h5p.h5p-editor"
     }
-    // REMOVE: h5pFile field
   }
 }
 ```
 
-### Task 7.5: Update Next.js Player
+### Task 7.5: Update Next.js Player ✅ COMPLETED
 
 **Priority: HIGH**
 
-After removing h5pFile, update the player to work with h5pContent:
+Updated the player to work with h5pContent:
 
-- [ ] Modify `/api/h5p/[contentId]/[...path]/route.ts` to serve content from Strapi's H5P storage
-- [ ] The h5pContent field contains `{ library, contentId }` - use contentId to fetch from `/h5p/content/:contentId`
-- [ ] Update `getH5PContentById` to not populate h5pFile
-- [ ] Update quizzes pages to check h5pContent instead of h5pFile
+- [x] Modified `/api/h5p/[contentId]/[...path]/route.ts` to proxy content from Strapi's H5P storage
+- [x] The h5pContent field contains `{ library, contentId }` - using contentId to fetch from `/api/h5p/content/:contentId`
+- [x] Updated `getH5PContentById` to not populate h5pFile
+- [x] Updated quizzes pages to check h5pContent instead of h5pFile
+- [x] Updated types to remove StrapiMedia and h5pFile references
 
-### Implementation Order
+### Implementation Order (All Completed)
 
-1. **Task 7.2** - Load existing content (most critical UX issue)
-2. **Task 7.3** - Remove separate save button (Drupal parity)
-3. **Task 7.1** - Remove h5pFile field (cleanup)
-4. **Task 7.5** - Update Next.js player (after schema change)
-5. **Task 7.4** - Update schema (final cleanup)
+1. ~~**Task 7.2** - Load existing content (most critical UX issue)~~ ✅
+2. ~~**Task 7.3** - Remove separate save button (Drupal parity)~~ ✅
+3. ~~**Task 7.1** - Remove h5pFile field (cleanup)~~ ✅
+4. ~~**Task 7.5** - Update Next.js player (after schema change)~~ ✅
+5. ~~**Task 7.4** - Update schema (final cleanup)~~ ✅
 
 ### Success Criteria
 

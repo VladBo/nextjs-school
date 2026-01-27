@@ -39,7 +39,6 @@ async function fetchFromStrapi<T>(
 export const getH5PContents = unstable_cache(
   async (): Promise<H5PContentsResponse | null> => {
     return fetchFromStrapi<H5PContentsResponse>('/h5p-contents', {
-      populate: ['h5pFile'],
       sort: ['createdAt:desc'],
     });
   },
@@ -49,9 +48,7 @@ export const getH5PContents = unstable_cache(
 
 export const getH5PContentById = unstable_cache(
   async (id: string): Promise<H5PContentResponse | null> => {
-    return fetchFromStrapi<H5PContentResponse>(`/h5p-contents/${id}`, {
-      populate: ['h5pFile'],
-    });
+    return fetchFromStrapi<H5PContentResponse>(`/h5p-contents/${id}`);
   },
   ['h5p-content'],
   { tags: ['h5p-content'], revalidate: 3600 }

@@ -34,11 +34,14 @@ export default async function QuizPage({
       </div>
 
       <div className="rounded-lg border bg-card p-8">
-        {content.h5pFile ? (
-          <H5PPlayer contentId={id} title={content.title} />
+        {content.h5pContent?.contentId ? (
+          <H5PPlayer
+            contentId={String(content.h5pContent.contentId)}
+            title={content.title}
+          />
         ) : (
           <div className="p-12 text-center text-muted-foreground">
-            No H5P file attached to this content
+            No H5P content available for this entry
           </div>
         )}
       </div>

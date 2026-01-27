@@ -31,7 +31,7 @@ export default async function QuizzesPage() {
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {response.data.map((item) => {
-            const hasFile = Boolean(item.h5pFile);
+            const hasContent = Boolean(item.h5pContent?.contentId);
             const libraryType = item.h5pContent?.library;
             const displayType = getLibraryDisplayName(libraryType);
 
@@ -43,7 +43,7 @@ export default async function QuizzesPage() {
                       <CardTitle className="line-clamp-2 text-lg">
                         {item.title}
                       </CardTitle>
-                      {hasFile && (
+                      {hasContent && (
                         <CheckCircle className="size-5 shrink-0 text-green-500" />
                       )}
                     </div>
@@ -57,7 +57,9 @@ export default async function QuizzesPage() {
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <PlayCircle className="size-4" />
                       <span>
-                        {hasFile ? 'Click to start' : 'Content not available'}
+                        {hasContent
+                          ? 'Click to start'
+                          : 'Content not available'}
                       </span>
                     </div>
                   </CardContent>
