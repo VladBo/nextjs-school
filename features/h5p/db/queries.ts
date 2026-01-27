@@ -40,6 +40,7 @@ export const getH5PContents = unstable_cache(
   async (): Promise<H5PContentsResponse | null> => {
     return fetchFromStrapi<H5PContentsResponse>('/h5p-contents', {
       populate: ['h5pFile'],
+      sort: ['createdAt:desc'],
     });
   },
   ['h5p-contents'],
