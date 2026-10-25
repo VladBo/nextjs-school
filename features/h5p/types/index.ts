@@ -7,6 +7,7 @@ export interface H5PContent {
   id: number;
   documentId: string;
   title: string;
+  sourceLocale?: string | null;
   h5pContent: H5PContentData | null;
   createdAt?: string;
   updatedAt?: string;
@@ -16,18 +17,18 @@ export interface H5PContent {
 export function getLibraryDisplayName(
   library: string | null | undefined
 ): string {
-  if (!library) return 'Unknown';
+  if (!library) return 'Невідомий тип';
 
   const libraryMap: Record<string, string> = {
-    'H5P.MultiChoice': 'Multiple Choice',
-    'H5P.QuestionSet': 'Quiz',
-    'H5P.TrueFalse': 'True/False',
-    'H5P.Blanks': 'Fill in the Blanks',
-    'H5P.DragQuestion': 'Drag & Drop',
-    'H5P.DragText': 'Drag the Words',
-    'H5P.MarkTheWords': 'Mark the Words',
-    'H5P.InteractiveVideo': 'Interactive Video',
-    'H5P.CoursePresentation': 'Course Presentation',
+    'H5P.MultiChoice': 'Вибір відповіді',
+    'H5P.QuestionSet': 'Вікторина',
+    'H5P.TrueFalse': 'Так або ні',
+    'H5P.Blanks': 'Заповнення пропусків',
+    'H5P.DragQuestion': 'Перетягування',
+    'H5P.DragText': 'Перетягування слів',
+    'H5P.MarkTheWords': 'Позначення слів',
+    'H5P.InteractiveVideo': 'Інтерактивне відео',
+    'H5P.CoursePresentation': 'Навчальна презентація',
   };
 
   // Extract base library name (e.g., "H5P.QuestionSet 1.20" -> "H5P.QuestionSet")

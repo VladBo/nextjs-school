@@ -13,19 +13,19 @@ export default async function QuizzesPage() {
     <div className="container mx-auto px-4 py-12 md:py-16 lg:py-20">
       <div className="mb-12 text-center">
         <h1 className="mb-4 text-4xl font-bold tracking-tight md:text-5xl">
-          Interactive Content
+          Інтерактивні вправи
         </h1>
         <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-          Explore our H5P interactive quizzes and educational content
+          Перевіряйте знання за допомогою інтерактивних вправ H5P
         </p>
       </div>
 
       {!response || !response.data || response.data.length === 0 ? (
         <div className="rounded-lg border bg-card p-12 text-center">
           <FileQuestion className="mx-auto mb-4 size-12 text-muted-foreground" />
-          <h3 className="mb-2 text-lg font-semibold">No content found</h3>
+          <h3 className="mb-2 text-lg font-semibold">Матеріалів поки немає</h3>
           <p className="text-sm text-muted-foreground">
-            Interactive content will appear here once it is created in Strapi
+            Інтерактивні вправи з’являться тут після публікації у Strapi
           </p>
         </div>
       ) : (
@@ -58,8 +58,8 @@ export default async function QuizzesPage() {
                       <PlayCircle className="size-4" />
                       <span>
                         {hasContent
-                          ? 'Click to start'
-                          : 'Content not available'}
+                          ? 'Відкрити вправу'
+                          : 'Вправа поки недоступна'}
                       </span>
                     </div>
                   </CardContent>

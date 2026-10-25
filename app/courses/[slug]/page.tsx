@@ -37,7 +37,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
   if (!course) {
     return {
-      title: 'Course Not Found',
+      title: 'Курс не знайдено',
     };
   }
 
@@ -52,7 +52,7 @@ export default async function CoursePage({ params }: Props) {
   const course = await getCourse(slug);
 
   if (!course) {
-    return <div className="container mx-auto py-8">Course not found</div>;
+    return <div className="container mx-auto py-8">Курс не знайдено</div>;
   }
 
   return (
@@ -63,7 +63,7 @@ export default async function CoursePage({ params }: Props) {
           {course.breadcrumb && (
             <nav className="mb-4 flex items-center space-x-2 text-sm text-gray-500">
               <Link href="/" className="hover:text-gray-700">
-                Home
+                Головна
               </Link>
               <span>/</span>
               <Link
@@ -80,7 +80,7 @@ export default async function CoursePage({ params }: Props) {
             <Button variant="ghost" asChild>
               <Link href="/courses">
                 <ArrowLeft className="mr-2 size-4" />
-                All Courses
+                Усі курси
               </Link>
             </Button>
           </div>
@@ -113,6 +113,7 @@ export default async function CoursePage({ params }: Props) {
                     alt={course.title}
                     fill
                     className="object-cover"
+                    sizes="300px"
                   />
                 </div>
               </div>
@@ -134,7 +135,7 @@ export default async function CoursePage({ params }: Props) {
             {course.sidebarHtml && (
               <aside
                 className="space-y-6"
-                dangerouslySetInnerHTML={{ __html: course.contentHtml }}
+                dangerouslySetInnerHTML={{ __html: course.sidebarHtml }}
               />
             )}
           </div>

@@ -13,6 +13,9 @@ type ArticlesSectionProps = {
 
 export const ArticlesSection: FC<ArticlesSectionProps> = ({ content }) => {
   const { articles, title, subtitle } = content;
+  const dateFormatter = new Intl.DateTimeFormat('uk-UA', {
+    dateStyle: 'medium',
+  });
   return (
     <section className="w-full py-6 md:py-8 lg:py-10">
       <div className="container mx-auto px-4 md:px-6">
@@ -33,7 +36,7 @@ export const ArticlesSection: FC<ArticlesSectionProps> = ({ content }) => {
               className="transition-shadow hover:shadow-lg"
             >
               {article.slug ? (
-                <Link href={article.slug}>
+                <Link href={`/articles/${article.slug}`}>
                   {article.cover && (
                     <div className="relative h-48 w-full">
                       <Image
@@ -42,6 +45,7 @@ export const ArticlesSection: FC<ArticlesSectionProps> = ({ content }) => {
                           article.cover.alternativeText ?? article.title ?? ''
                         }
                         fill
+                        sizes="(max-width: 1024px) 100vw, 33vw"
                         className="rounded-t-lg object-cover"
                       />
                     </div>
@@ -53,9 +57,15 @@ export const ArticlesSection: FC<ArticlesSectionProps> = ({ content }) => {
                           {(article.category as { name: string })?.name}
                         </Badge>
                       )}
-                      {article.publishedAt && (
+                      {(article.sourceUpdatedAt || article.publishedAt) && (
                         <span className="text-xs text-gray-500">
-                          {article.publishedAt}
+                          {dateFormatter.format(
+                            new Date(
+                              article.sourceUpdatedAt ??
+                                article.publishedAt ??
+                                ''
+                            )
+                          )}
                         </span>
                       )}
                     </div>
@@ -79,6 +89,7 @@ export const ArticlesSection: FC<ArticlesSectionProps> = ({ content }) => {
                           article.cover.alternativeText ?? article.title ?? ''
                         }
                         fill
+                        sizes="(max-width: 1024px) 100vw, 33vw"
                         className="rounded-t-lg object-cover"
                       />
                     </div>
@@ -91,9 +102,15 @@ export const ArticlesSection: FC<ArticlesSectionProps> = ({ content }) => {
                           {(article.category as { name: string })?.name}
                         </Badge>
                       )}
-                      {article.publishedAt && (
+                      {(article.sourceUpdatedAt || article.publishedAt) && (
                         <span className="text-xs text-gray-500">
-                          {article.publishedAt}
+                          {dateFormatter.format(
+                            new Date(
+                              article.sourceUpdatedAt ??
+                                article.publishedAt ??
+                                ''
+                            )
+                          )}
                         </span>
                       )}
                     </div>

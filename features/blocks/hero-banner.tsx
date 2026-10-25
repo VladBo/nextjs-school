@@ -1,8 +1,5 @@
-import { ArrowRight } from 'lucide-react';
-import Link from 'next/link';
 import { FC } from 'react';
 
-import { Button } from '@/components/ui/button';
 import { components } from '@/types/strapi';
 
 import { Banner } from './banner';
@@ -15,7 +12,7 @@ type HeroBannerProps = {
 export const HeroBanner: FC<HeroBannerProps> = ({ content }) => {
   const { banner, slider } = content;
   return (
-    <section className="w-full bg-gradient-to-br from-blue-50 to-indigo-100 py-6 md:py-10 lg:py-12">
+    <section className="w-full overflow-hidden bg-gradient-to-br from-blue-50 via-white to-indigo-100 py-8 md:py-12 lg:py-16">
       <div className="container mx-auto px-4 md:px-6">
         <div className="grid items-center gap-6 md:grid-cols-2">
           {banner && <Banner content={banner} />}

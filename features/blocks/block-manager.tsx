@@ -1,4 +1,4 @@
-import { ComponentType, FC } from 'react';
+import { ElementType, FC } from 'react';
 
 import { components } from '@/types/strapi';
 
@@ -11,7 +11,7 @@ import { Quote } from './quote';
 import { RichText } from './rich-text';
 import { Slider } from './slider';
 
-export const BLOCK_COMPONENTS: Record<string, ComponentType<any>> = {
+export const BLOCK_COMPONENTS: Record<string, ElementType> = {
   'shared.rich-text': RichText,
   'shared.media': Media,
   'shared.quote': Quote,
@@ -23,9 +23,7 @@ export const BLOCK_COMPONENTS: Record<string, ComponentType<any>> = {
 };
 
 export type SharedBlock =
-  // | (components['schemas']['SharedSliderComponent'] & {
-  //     __component: 'shared.slider';
-  //   })
+  | components['schemas']['SharedSliderComponent']
   | components['schemas']['SharedSeoComponent']
   | components['schemas']['SharedRichTextComponent']
   | components['schemas']['SharedQuoteComponent']

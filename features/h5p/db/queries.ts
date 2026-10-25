@@ -39,10 +39,15 @@ async function fetchFromStrapi<T>(
 export const getH5PContents = unstable_cache(
   async (): Promise<H5PContentsResponse | null> => {
     return fetchFromStrapi<H5PContentsResponse>('/h5p-contents', {
+      filters: {
+        sourceLocale: {
+          $eq: 'uk',
+        },
+      },
       sort: ['createdAt:desc'],
     });
   },
-  ['h5p-contents'],
+  ['h5p-contents', 'uk'],
   { tags: ['h5p-contents'], revalidate: 3600 }
 );
 

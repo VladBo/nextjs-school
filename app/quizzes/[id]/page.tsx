@@ -14,7 +14,7 @@ export default async function QuizPage({
   const { id } = await params;
   const response = await getH5PContentById(id);
 
-  if (!response || !response.data) {
+  if (!response || !response.data || response.data.sourceLocale !== 'uk') {
     notFound();
   }
 
@@ -25,7 +25,7 @@ export default async function QuizPage({
       <Link href="/quizzes">
         <Button variant="ghost" className="mb-8">
           <ArrowLeft className="mr-2 size-4" />
-          Back to Content
+          До всіх вправ
         </Button>
       </Link>
 
@@ -41,7 +41,7 @@ export default async function QuizPage({
           />
         ) : (
           <div className="p-12 text-center text-muted-foreground">
-            No H5P content available for this entry
+            Для цього запису немає доступної вправи H5P
           </div>
         )}
       </div>

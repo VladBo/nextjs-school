@@ -11,9 +11,9 @@ import { cn } from '@/lib/utils';
 import '../styles/globals.css';
 
 export const metadata: Metadata = {
-  title: 'Lutsk School number 2',
-  description: 'Created with v0',
-  generator: 'v0.dev',
+  title: 'Сайт учителя інформатики',
+  description:
+    'Навчальні матеріали, новини та інтерактивні завдання з інформатики.',
 };
 
 export default async function RootLayout({
@@ -22,7 +22,7 @@ export default async function RootLayout({
   children: ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="uk">
       <body
         className={cn(
           'group/body theme-blue overscroll-none font-sans text-foreground antialiased',

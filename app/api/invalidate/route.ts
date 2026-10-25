@@ -2,6 +2,7 @@ import { revalidatePath, revalidateTag } from 'next/cache';
 import { NextRequest, NextResponse } from 'next/server';
 
 import { CACHE_TAGS, CONTENT_TYPE_CACHE_MAP } from '@/lib/cache';
+import { logger } from '@/lib/logger';
 
 interface StrapiWebhookPayload {
   event: string;
@@ -11,7 +12,7 @@ interface StrapiWebhookPayload {
     id: number;
     documentId?: string;
     slug?: string;
-    [key: string]: any;
+    [key: string]: unknown;
   };
 }
 
@@ -20,13 +21,13 @@ export async function POST(request: NextRequest) {
     const webhookSecret = request.headers.get('Authorization');
 
     if (webhookSecret !== process.env.STRAPI_WEBHOOK_SECRET) {
-      console.error('Invalid webhook secret');
+      logger.error('Invalid webhook secret');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const payload: StrapiWebhookPayload = await request.json();
 
-    console.log('🔄 Webhook received:', {
+    logger.info('Webhook received:', {
       event: payload.event,
       model: payload.model,
       entryId: payload.entry?.id,
@@ -39,7 +40,7 @@ export async function POST(request: NextRequest) {
       ] || [];
 
     for (const tag of tagsToInvalidate) {
-      console.log(`🗑️  Invalidating cache tag: ${tag}`);
+      logger.info(`Invalidating cache tag: ${tag}`);
       revalidateTag(tag);
     }
 
@@ -52,7 +53,7 @@ export async function POST(request: NextRequest) {
     }
 
     if (payload.model === 'homepage') {
-      console.log('🔄 Revalidating homepage path');
+      logger.info('Revalidating homepage path');
       revalidatePath('/');
     }
 
@@ -61,7 +62,7 @@ export async function POST(request: NextRequest) {
       payload.model === 'footer-menu' ||
       payload.model === 'global'
     ) {
-      console.log('🔄 Revalidating all paths due to menu change');
+      logger.info('Revalidating all paths due to menu change');
       revalidatePath('/', 'layout');
     }
 
@@ -75,7 +76,7 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('❌ Error processing webhook:', error);
+    logger.error('Error processing webhook:', error);
     return NextResponse.json(
       {
         error: 'Internal server error',

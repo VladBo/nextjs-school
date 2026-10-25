@@ -116,33 +116,44 @@ const client = createClient<paths>({
 });
 ```
 
-## H5P Quiz Integration
+## H5P Integration
 
-**Current Status**: Framework in place, needs H5P library integration.
+> **IMPORTANT**: See `H5P_EDITOR_IMPLEMENTATION.md` for full implementation details and plan.
 
-### Components
+### Current Status
 
-- `features/h5p/components/h5p-player.tsx` - Renders H5P content (placeholder)
-- `features/h5p/components/quiz-card.tsx` - Quiz preview card
-- `features/h5p/components/quiz-filters.tsx` - Client-side filtering (grade, subject)
+| Component                | Status          | Notes                       |
+| ------------------------ | --------------- | --------------------------- |
+| H5P Player (Next.js)     | **WORKING**     | Uses h5p-standalone library |
+| H5P File Upload (Strapi) | **WORKING**     | Upload pre-made .h5p files  |
+| H5P Editor (Strapi)      | **NOT WORKING** | Shows "Loading..." forever  |
 
-### Data Fetching
+### Goal
 
-- `features/h5p/db/queries.ts` - `getQuizzes()`, `getQuizById()`, `getFeaturedQuizzes()`
+Implement a full H5P editor in Strapi CMS (like Lumi/Drupal 7) so users can create H5P content directly in browser without external tools.
 
-### API Routes
+### Root Cause of Editor Issue
 
-- `GET /api/h5p/[contentId]` - Proxies H5P content from Strapi
+The H5P libraries in `strapi-school/public/uploads/h5p/libraries/` are incomplete stubs - only contain `library.json`, missing actual JS/CSS files.
 
-### Implementation Approaches (documented)
+### Next.js Components
 
-1. **Simple** (`H5P_SIMPLE_WORKFLOW.md`): Lumi desktop app + h5p-standalone library
-2. **Full Plugin** (`H5P_INTEGRATION_GUIDE.md`): Strapi H5P plugin with browser editor
+- `features/h5p/components/h5p-player.tsx` - Renders H5P content using h5p-standalone
+- `features/h5p/db/queries.ts` - `getH5PContents()`, `getH5PContentById()`
+- `app/api/h5p/[contentId]/[...path]/route.ts` - Extracts and serves .h5p ZIP contents
+- `app/quizzes/` - Quiz listing and player pages
 
-### Quiz Filters
+### Strapi Plugin
 
-- Grades: 1-11
-- Subjects: Math, Science, History, English, Geography, Other
+**Location**: `/Users/Vladyslav_Bondarchuk/Work/school/strapi-school/src/plugins/h5p/`
+
+Uses `@lumieducation/h5p-server` but needs Koa adaptation (Strapi uses Koa, not Express).
+
+### Key Documentation Files
+
+- `H5P_EDITOR_IMPLEMENTATION.md` - **Full implementation guide and plan**
+- `H5P_SIMPLE_WORKFLOW.md` - Simple workflow using Lumi desktop app
+- `H5P_INTEGRATION_GUIDE.md` - Full plugin integration guide
 
 ## Environment Variables
 
@@ -233,6 +244,9 @@ Uses **shadcn/ui** component library in `components/ui/`:
 
 ## Known Issues / TODOs
 
-1. H5PPlayer component needs actual h5p-standalone library integration
-2. TypeScript build errors currently ignored in `next.config.ts`
-3. ESLint disabled during build (can be re-enabled when issues fixed)
+1. **H5P Editor in Strapi doesn't work** - See `H5P_EDITOR_IMPLEMENTATION.md` for fix plan
+   - Root cause: H5P libraries are incomplete stubs
+   - Need to download full libraries from H5P Hub
+   - Need to adapt Express routes to Koa for Strapi
+2. H5P Player on Next.js frontend is **WORKING**
+3. TypeScript and ESLint now pass (errors were fixed)

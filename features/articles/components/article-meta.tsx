@@ -1,6 +1,4 @@
-import { Calendar, Clock, Share2, User } from 'lucide-react';
-
-import { Button } from '@/components/ui/button';
+import { Calendar, Clock, User } from 'lucide-react';
 
 type ArticleMetaProps = {
   authorName: string;
@@ -8,6 +6,12 @@ type ArticleMetaProps = {
 };
 
 export const ArticleMeta = ({ authorName, publishedAt }: ArticleMetaProps) => {
+  const formattedDate = publishedAt
+    ? new Intl.DateTimeFormat('uk-UA', { dateStyle: 'long' }).format(
+        new Date(publishedAt)
+      )
+    : '';
+
   return (
     <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
       <div className="flex items-center gap-1">
@@ -16,16 +20,12 @@ export const ArticleMeta = ({ authorName, publishedAt }: ArticleMetaProps) => {
       </div>
       <div className="flex items-center gap-1">
         <Calendar className="size-4" />
-        <span>{publishedAt}</span>
+        <span>{formattedDate}</span>
       </div>
       <div className="flex items-center gap-1">
         <Clock className="size-4" />
-        <span>5 min read</span>
+        <span>5 хв читання</span>
       </div>
-      <Button variant="ghost" size="sm">
-        <Share2 className="mr-1 size-4" />
-        Share
-      </Button>
     </div>
   );
 };

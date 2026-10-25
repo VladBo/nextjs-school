@@ -53,7 +53,7 @@ export function H5PPlayer({ contentId, title }: H5PPlayerProps) {
           setError(
             err instanceof Error
               ? err.message
-              : 'Failed to initialize H5P player'
+              : 'Не вдалося запустити програвач H5P'
           );
           setLoading(false);
         }
@@ -80,14 +80,14 @@ export function H5PPlayer({ contentId, title }: H5PPlayerProps) {
       <div className="flex items-center justify-center p-12">
         <div className="text-center">
           <div className="mb-2 text-lg font-medium text-destructive">
-            Error loading content
+            Помилка завантаження вправи
           </div>
           <div className="mb-4 text-sm text-muted-foreground">{error}</div>
           <button
             onClick={() => window.location.reload()}
             className="rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground hover:bg-primary/90"
           >
-            Try Again
+            Спробувати ще раз
           </button>
         </div>
       </div>
@@ -101,10 +101,10 @@ export function H5PPlayer({ contentId, title }: H5PPlayerProps) {
           <div className="text-center">
             <div className="mx-auto mb-4 size-12 animate-spin rounded-full border-4 border-primary border-t-transparent" />
             <div className="text-lg font-medium">
-              Loading {title || 'content'}...
+              Завантаження: {title || 'вправа'}…
             </div>
             <div className="text-sm text-muted-foreground">
-              Preparing interactive content
+              Готуємо інтерактивний матеріал
             </div>
           </div>
         </div>
