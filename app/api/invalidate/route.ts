@@ -52,6 +52,13 @@ export async function POST(request: NextRequest) {
       revalidatePath(`/courses/${payload.entry.slug}`);
     }
 
+    if (payload.model === 'h5p-content') {
+      revalidatePath('/quizzes');
+      if (payload.entry?.documentId) {
+        revalidatePath(`/quizzes/${payload.entry.documentId}`);
+      }
+    }
+
     if (payload.model === 'homepage') {
       logger.info('Revalidating homepage path');
       revalidatePath('/');
