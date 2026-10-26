@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "test:h5p-proxy": "node --test lib/h5p-proxy.test.js",
     "lint": "next lint",
     "prepare": "husky",
     "type": "tsc --noEmit",
