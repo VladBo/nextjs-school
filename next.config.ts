@@ -1,5 +1,21 @@
 import type { NextConfig } from 'next';
 
+const assetBaseUrl = process.env.ASSET_BASE_URL;
+const assetImagePattern = assetBaseUrl
+  ? (() => {
+      const assetUrl = new URL(assetBaseUrl);
+      const assetPath = assetUrl.pathname.replace(/\/$/, '');
+
+      return {
+        protocol: assetUrl.protocol.slice(0, -1) as 'http' | 'https',
+        hostname: assetUrl.hostname,
+        port: assetUrl.port,
+        pathname: `${assetPath}/media/**`,
+        search: '',
+      };
+    })()
+  : undefined;
+
 const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
@@ -14,6 +30,7 @@ const nextConfig: NextConfig = {
         hostname: 'localhost',
         port: '1337',
       },
+      ...(assetImagePattern ? [assetImagePattern] : []),
     ],
     unoptimized: false,
   },
