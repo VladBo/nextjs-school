@@ -33,24 +33,8 @@ export const getArticles = async () => {
 };
 
 export const getArticleBySlug = async (slug: string) => {
-  const response = await client.GET('/articles', {
-    params: {
-      query: {
-        filters: {
-          slug: {
-            $eq: slug,
-          },
-        },
-        populate: '*',
-      },
-    },
-    fetch: (request: RequestInfo, init?: RequestInit) =>
-      fetchStrapi(request, {
-        ...init,
-        next: { tags: [CACHE_TAGS.ARTICLES, `article-${slug}`] },
-        cache: 'force-cache',
-      }),
-  });
-
-  return response.data?.data?.[0];
+  // Reuse the cached list fetched for static params. Querying once per slug
+  // fans out many concurrent requests to Strapi during a full SSG build.
+  const articles = await getArticles();
+  return articles.find((article) => article.slug === slug);
 };
