@@ -19,7 +19,8 @@ export async function GET(
       ? `${ASSET_BASE_URL}/h5p/content/${contentId}/${filePath}`
       : `${STRAPI_URL}/api/h5p/content/${contentId}/${filePath}`;
     return proxyH5PFile({
-      cacheControl: 'no-store',
+      cacheControl:
+        'public, max-age=0, s-maxage=300, stale-while-revalidate=60',
       cacheTags: ['h5p-assets', `h5p-content-${contentId}`],
       request,
       upstreamUrl: assetUrl,

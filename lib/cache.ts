@@ -28,7 +28,8 @@ export const CONTENT_TYPE_CACHE_MAP = {
     CACHE_TAGS.H5P_CONTENT,
     CACHE_TAGS.H5P_ASSETS,
   ],
-  author: [CACHE_TAGS.AUTHORS],
-  category: [CACHE_TAGS.CATEGORIES],
-  tag: [CACHE_TAGS.TAGS],
+  // These relations are populated in article and homepage responses.
+  author: [CACHE_TAGS.AUTHORS, CACHE_TAGS.ARTICLES, CACHE_TAGS.HOMEPAGE],
+  category: [CACHE_TAGS.CATEGORIES, CACHE_TAGS.ARTICLES, CACHE_TAGS.HOMEPAGE],
+  tag: [CACHE_TAGS.TAGS, CACHE_TAGS.ARTICLES, CACHE_TAGS.HOMEPAGE],
 } as const;

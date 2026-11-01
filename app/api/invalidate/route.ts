@@ -7,13 +7,15 @@ import { logger } from '@/lib/logger';
 interface StrapiWebhookPayload {
   event: string;
   createdAt: string;
-  model: string;
-  entry: {
-    id: number;
+  model?: string;
+  uid?: string;
+  entry?: {
+    id?: number;
     documentId?: string;
     slug?: string;
     [key: string]: unknown;
   };
+  media?: Record<string, unknown>;
 }
 
 export async function POST(request: NextRequest) {
@@ -26,53 +28,80 @@ export async function POST(request: NextRequest) {
     }
 
     const payload: StrapiWebhookPayload = await request.json();
+    // Strapi sends a short `model` name for entry events and a separate `uid`.
+    // Media events have a different envelope and no model/uid.
+    const rawModel = payload.model || payload.uid;
+    const model = rawModel?.includes('::')
+      ? rawModel.split('.').at(-1)
+      : rawModel;
+    const isMediaEvent =
+      payload.event.startsWith('media.') ||
+      !!payload.media ||
+      rawModel === 'plugin::upload.file' ||
+      model === 'file';
 
     logger.info('Webhook received:', {
       event: payload.event,
-      model: payload.model,
+      model: isMediaEvent ? 'media' : model,
       entryId: payload.entry?.id,
       slug: payload.entry?.slug,
     });
 
-    const tagsToInvalidate =
-      CONTENT_TYPE_CACHE_MAP[
-        payload.model as keyof typeof CONTENT_TYPE_CACHE_MAP
-      ] || [];
+    const tagsToInvalidate = isMediaEvent
+      ? [...new Set([...Object.values(CACHE_TAGS), 'legacy-content-aliases'])]
+      : CONTENT_TYPE_CACHE_MAP[model as keyof typeof CONTENT_TYPE_CACHE_MAP] ||
+        [];
 
     for (const tag of tagsToInvalidate) {
       logger.info(`Invalidating cache tag: ${tag}`);
       revalidateTag(tag);
     }
 
-    if (payload.model === 'article' && payload.entry?.slug) {
-      revalidateTag(`article-${payload.entry.slug}`);
-      revalidatePath('/articles/[slug]', 'page');
+    if (isMediaEvent) {
+      // Media can be referenced from any page, so refresh the full route tree.
+      revalidatePath('/', 'layout');
     }
 
-    if (payload.model === 'page' && payload.entry?.slug) {
-      revalidatePath('/pages/[slug]', 'page');
-    }
-
-    if (payload.model === 'course' && payload.entry?.slug) {
-      revalidatePath(`/courses/${payload.entry.slug}`);
-    }
-
-    if (payload.model === 'h5p-content') {
-      revalidatePath('/quizzes');
-      if (payload.entry?.documentId) {
-        revalidatePath(`/quizzes/${payload.entry.documentId}`);
+    if (model === 'article') {
+      revalidateTag('legacy-content-aliases');
+      if (payload.entry?.slug) {
+        revalidateTag(`article-${payload.entry.slug}`);
+        revalidatePath('/articles/[slug]', 'page');
       }
     }
 
-    if (payload.model === 'homepage') {
+    if (model === 'page') {
+      revalidateTag('legacy-content-aliases');
+      if (payload.entry?.slug) {
+        revalidatePath('/pages/[slug]', 'page');
+      }
+    }
+
+    if (model === 'course' && payload.entry?.slug) {
+      revalidatePath(`/courses/${payload.entry.slug}`);
+    }
+
+    if (model === 'h5p-content') {
+      revalidatePath('/quizzes');
+      revalidatePath('/api/h5p/[contentId]/[...path]', 'page');
+      revalidateTag('legacy-content-aliases');
+      if (payload.entry?.documentId) {
+        revalidatePath(`/quizzes/${payload.entry.documentId}`);
+      }
+      if (payload.entry?.slug) {
+        revalidatePath(`/quizzes/${payload.entry.slug}`);
+      }
+    }
+
+    if (model === 'homepage') {
       logger.info('Revalidating homepage path');
       revalidatePath('/');
     }
 
     if (
-      payload.model === 'header-menu' ||
-      payload.model === 'footer-menu' ||
-      payload.model === 'global'
+      model === 'header-menu' ||
+      model === 'footer-menu' ||
+      model === 'global'
     ) {
       logger.info('Revalidating all paths due to menu change');
       revalidatePath('/', 'layout');
@@ -84,7 +113,7 @@ export async function POST(request: NextRequest) {
       invalidated: {
         tags: tagsToInvalidate,
         entry: payload.entry?.slug || payload.entry?.id,
-        model: payload.model,
+        model: isMediaEvent ? 'media' : model,
       },
     });
   } catch (error) {
