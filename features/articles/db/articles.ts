@@ -1,4 +1,4 @@
-import { client } from '@/lib/api';
+import { client, fetchStrapi } from '@/lib/api';
 import { CACHE_TAGS } from '@/lib/cache';
 
 export const getArticles = async () => {
@@ -13,19 +13,23 @@ export const getArticles = async () => {
         populate: '*',
         sort: 'sourceUpdatedAt:desc',
         pagination: {
-          pageSize: 50,
+          pageSize: 100,
         },
       },
     },
     fetch: (request: RequestInfo, init?: RequestInit) =>
-      fetch(request, {
+      fetchStrapi(request, {
         ...init,
         next: { tags: [CACHE_TAGS.ARTICLES] },
         cache: 'force-cache',
       }),
   });
 
-  return response.data?.data ?? [];
+  if (!response.data) {
+    throw new Error('Unable to load articles from Strapi');
+  }
+
+  return response.data.data ?? [];
 };
 
 export const getArticleBySlug = async (slug: string) => {
@@ -41,9 +45,9 @@ export const getArticleBySlug = async (slug: string) => {
       },
     },
     fetch: (request: RequestInfo, init?: RequestInit) =>
-      fetch(request, {
+      fetchStrapi(request, {
         ...init,
-        next: { tags: [`article-${slug}`] },
+        next: { tags: [CACHE_TAGS.ARTICLES, `article-${slug}`] },
         cache: 'force-cache',
       }),
   });

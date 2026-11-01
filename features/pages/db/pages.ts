@@ -1,7 +1,8 @@
 import qs from 'qs';
-import { cache } from 'react';
 
 import type { SharedBlock } from '@/features/blocks/block-manager';
+import { fetchStrapi } from '@/lib/api';
+import { CACHE_TAGS } from '@/lib/cache';
 
 const STRAPI_URL =
   process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337';
@@ -23,11 +24,59 @@ export type ContentPage = {
   blocks?: SharedBlock[];
 };
 
+export type PageSearchItem = Pick<
+  ContentPage,
+  'documentId' | 'title' | 'description' | 'slug' | 'pageType'
+> & { publishedAt?: string | null };
+
 type PageResponse = {
   data: ContentPage[];
 };
 
-export const getPageBySlug = cache(async (slug: string) => {
+type PageSearchResponse = {
+  data: PageSearchItem[];
+};
+
+export async function getPageSlugs(): Promise<string[]> {
+  const query = qs.stringify(
+    { fields: ['slug'], pagination: { pageSize: 100 } },
+    { encodeValuesOnly: true }
+  );
+  const response = await fetchStrapi(`${STRAPI_URL}/api/pages?${query}`, {
+    cache: 'force-cache',
+    next: { tags: [CACHE_TAGS.PAGES] },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Unable to load page slugs: ${response.status}`);
+  }
+
+  const payload = (await response.json()) as PageResponse;
+  return payload.data.map((page) => page.slug).filter(Boolean);
+}
+
+export async function getPagesForSearch(): Promise<PageSearchItem[]> {
+  const query = qs.stringify(
+    {
+      fields: ['title', 'description', 'slug', 'pageType', 'publishedAt'],
+      pagination: { pageSize: 100 },
+    },
+    { encodeValuesOnly: true }
+  );
+  const response = await fetchStrapi(`${STRAPI_URL}/api/pages?${query}`, {
+    cache: 'force-cache',
+    next: { tags: [CACHE_TAGS.PAGES] },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Unable to load pages for search: ${response.status}`);
+  }
+
+  const payload = (await response.json()) as PageSearchResponse;
+  return payload.data;
+}
+
+export async function getPageBySlug(slug: string) {
   const query = qs.stringify(
     {
       filters: { slug: { $eq: slug } },
@@ -48,8 +97,9 @@ export const getPageBySlug = cache(async (slug: string) => {
     },
     { encodeValuesOnly: true }
   );
-  const response = await fetch(`${STRAPI_URL}/api/pages?${query}`, {
-    cache: 'no-store',
+  const response = await fetchStrapi(`${STRAPI_URL}/api/pages?${query}`, {
+    cache: 'force-cache',
+    next: { tags: [CACHE_TAGS.PAGES, `page-${slug}`] },
   });
 
   if (!response.ok) {
@@ -58,4 +108,4 @@ export const getPageBySlug = cache(async (slug: string) => {
 
   const payload = (await response.json()) as PageResponse;
   return payload.data[0] ?? null;
-});
+}

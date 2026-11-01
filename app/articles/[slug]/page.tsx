@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { ArticleBlocks } from '@/features/articles/components/article-blocks';
 import { ArticleImage } from '@/features/articles/components/article-image';
 import { ArticleMeta } from '@/features/articles/components/article-meta';
-import { getArticleBySlug } from '@/features/articles/db';
+import { getArticleBySlug, getArticles } from '@/features/articles/db';
 import { getStrapiMediaUrl } from '@/lib/utils';
 
 type PageProps = {
@@ -15,6 +15,11 @@ type PageProps = {
     slug: string;
   }>;
 };
+
+export async function generateStaticParams() {
+  const articles = await getArticles();
+  return articles.map((article) => ({ slug: article.slug }));
+}
 
 export async function generateMetadata(props: PageProps): Promise<Metadata> {
   const params = await props.params;

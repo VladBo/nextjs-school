@@ -1,18 +1,41 @@
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
 import { H5PPlayer } from '@/features/h5p/components';
-import { getH5PContentById } from '@/features/h5p/db';
+import { getH5PContentById, getH5PContents } from '@/features/h5p/db';
+import { getH5PRouteSlug } from '@/features/h5p/types';
+
+export async function generateStaticParams() {
+  const response = await getH5PContents();
+
+  if (!response) {
+    throw new Error('Unable to load quizzes from Strapi during the build');
+  }
+
+  return response.data
+    .filter((content) => content.sourceLocale === 'uk')
+    .map((content) => ({ slug: getH5PRouteSlug(content) }));
+}
 
 export default async function QuizPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ slug: string }>;
 }) {
-  const { id } = await params;
-  const response = await getH5PContentById(id);
+  const { slug } = await params;
+  const contents = await getH5PContents();
+  const indexedContent = contents?.data.find(
+    (content) =>
+      content.documentId === slug || getH5PRouteSlug(content) === slug
+  );
+  if (!indexedContent) notFound();
+
+  const canonicalSlug = getH5PRouteSlug(indexedContent);
+  if (slug !== canonicalSlug) permanentRedirect(`/quizzes/${canonicalSlug}`);
+
+  const response = await getH5PContentById(indexedContent.documentId);
 
   if (!response || !response.data || response.data.sourceLocale !== 'uk') {
     notFound();

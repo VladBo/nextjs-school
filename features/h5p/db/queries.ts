@@ -1,6 +1,7 @@
 import { unstable_cache } from 'next/cache';
 import qs from 'qs';
 
+import { fetchStrapi } from '@/lib/api';
 import { logger } from '@/lib/logger';
 
 import { H5PContentResponse, H5PContentsResponse } from '../types';
@@ -18,7 +19,7 @@ async function fetchFromStrapi<T>(
   const url = `${STRAPI_URL}/api${endpoint}${queryString}`;
 
   try {
-    const response = await fetch(url, {
+    const response = await fetchStrapi(url, {
       headers: { 'Content-Type': 'application/json' },
     });
 
@@ -48,7 +49,7 @@ export const getH5PContents = unstable_cache(
     });
   },
   ['h5p-contents', 'uk'],
-  { tags: ['h5p-contents'], revalidate: 3600 }
+  { tags: ['h5p-contents'], revalidate: false }
 );
 
 export const getH5PContentById = unstable_cache(
@@ -56,5 +57,5 @@ export const getH5PContentById = unstable_cache(
     return fetchFromStrapi<H5PContentResponse>(`/h5p-contents/${id}`);
   },
   ['h5p-content'],
-  { tags: ['h5p-content'], revalidate: 3600 }
+  { tags: ['h5p-content'], revalidate: false }
 );

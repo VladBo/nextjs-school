@@ -21,6 +21,10 @@ interface Course {
 
 const courses = coursesData as Record<string, Course>;
 
+export async function generateStaticParams() {
+  return Object.keys(courses).map((slug) => ({ slug }));
+}
+
 const getCourse = async (slug: string): Promise<Course | null> => {
   return courses[slug] ?? null;
 };

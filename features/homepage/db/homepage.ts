@@ -1,4 +1,4 @@
-import { client } from '@/lib/api';
+import { client, fetchStrapi } from '@/lib/api';
 import { CACHE_TAGS } from '@/lib/cache';
 
 export const getGlobalSettings = async () => {
@@ -9,12 +9,16 @@ export const getGlobalSettings = async () => {
       },
     },
     fetch: (request: RequestInfo, init?: RequestInit) =>
-      fetch(request, {
+      fetchStrapi(request, {
         ...init,
         next: { tags: ['global-settings'] },
         cache: 'force-cache',
       }),
   });
+
+  if (!response.data) {
+    throw new Error('Unable to load global settings from Strapi');
+  }
 
   return response.data?.data;
 };
@@ -23,7 +27,7 @@ export const getHomepage = async () => {
   const response = await client.GET('/homepage', {
     params: {
       query: {
-        // @ts-ignore
+        // @ts-expect-error Strapi generated types do not model populate deeply.
         populate: {
           blocks: {
             on: {
@@ -55,12 +59,16 @@ export const getHomepage = async () => {
       },
     },
     fetch: (request: RequestInfo, init?: RequestInit) =>
-      fetch(request, {
+      fetchStrapi(request, {
         ...init,
         next: { tags: [CACHE_TAGS.HOMEPAGE] },
         cache: 'force-cache',
       }),
   });
+
+  if (!response.data) {
+    throw new Error('Unable to load the homepage from Strapi');
+  }
 
   return response.data?.data;
 };

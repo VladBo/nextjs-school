@@ -5,12 +5,18 @@ import { notFound } from 'next/navigation';
 
 import { BlockManager } from '@/features/blocks/block-manager';
 import { ContactMap } from '@/features/pages/components/contact-map';
-import { getPageBySlug } from '@/features/pages/db/pages';
+import { getPageBySlug, getPageSlugs } from '@/features/pages/db/pages';
+import { getSearchIndex } from '@/features/search/db/search';
 import { getStrapiMediaUrl } from '@/lib/utils';
 
 type PageProps = {
   params: Promise<{ slug: string }>;
 };
+
+export async function generateStaticParams() {
+  const [slugs] = await Promise.all([getPageSlugs(), getSearchIndex()]);
+  return slugs.map((slug) => ({ slug }));
+}
 
 export async function generateMetadata({
   params,

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getH5PContents } from '@/features/h5p/db';
-import { getLibraryDisplayName } from '@/features/h5p/types';
+import { getH5PRouteSlug, getLibraryDisplayName } from '@/features/h5p/types';
 
 export default async function QuizzesPage() {
   const response = await getH5PContents();
@@ -36,7 +36,10 @@ export default async function QuizzesPage() {
             const displayType = getLibraryDisplayName(libraryType);
 
             return (
-              <Link key={item.documentId} href={`/quizzes/${item.documentId}`}>
+              <Link
+                key={item.documentId}
+                href={`/quizzes/${getH5PRouteSlug(item)}`}
+              >
                 <Card className="group h-full transition-all hover:border-primary/50 hover:shadow-lg">
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between gap-2">

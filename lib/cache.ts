@@ -7,6 +7,8 @@ export const CACHE_TAGS = {
   COURSES: 'courses',
   H5P_CONTENTS: 'h5p-contents',
   H5P_CONTENT: 'h5p-content',
+  H5P_ASSETS: 'h5p-assets',
+  PAGES: 'pages',
   AUTHORS: 'authors',
   CATEGORIES: 'categories',
   TAGS: 'tags',
@@ -19,9 +21,15 @@ export const CONTENT_TYPE_CACHE_MAP = {
   'header-menu': [CACHE_TAGS.HEADER_MENU],
   'footer-menu': [CACHE_TAGS.FOOTER_MENU],
   article: [CACHE_TAGS.ARTICLES, CACHE_TAGS.HOMEPAGE],
+  page: [CACHE_TAGS.PAGES],
   course: [CACHE_TAGS.COURSES, CACHE_TAGS.HOMEPAGE],
-  'h5p-content': [CACHE_TAGS.H5P_CONTENTS, CACHE_TAGS.H5P_CONTENT],
-  author: [CACHE_TAGS.AUTHORS],
-  category: [CACHE_TAGS.CATEGORIES],
-  tag: [CACHE_TAGS.TAGS],
+  'h5p-content': [
+    CACHE_TAGS.H5P_CONTENTS,
+    CACHE_TAGS.H5P_CONTENT,
+    CACHE_TAGS.H5P_ASSETS,
+  ],
+  // These relations are populated in article and homepage responses.
+  author: [CACHE_TAGS.AUTHORS, CACHE_TAGS.ARTICLES, CACHE_TAGS.HOMEPAGE],
+  category: [CACHE_TAGS.CATEGORIES, CACHE_TAGS.ARTICLES, CACHE_TAGS.HOMEPAGE],
+  tag: [CACHE_TAGS.TAGS, CACHE_TAGS.ARTICLES, CACHE_TAGS.HOMEPAGE],
 } as const;
