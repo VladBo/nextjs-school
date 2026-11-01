@@ -15,6 +15,7 @@ import { getGlobalSettings } from '@/features/homepage/db';
 import { cn } from '@/lib/utils';
 
 import { getHeaderMenu } from '../db';
+import { MobileNavigation } from './mobile-navigation';
 
 export const Header = async () => {
   const [header, globalSettings] = await Promise.all([
@@ -97,6 +98,7 @@ export const Header = async () => {
             </NavigationMenuList>
           </NavigationMenu>
         </div>
+        <MobileNavigation className="md:hidden" links={header?.links ?? []} />
         <form
           action="/search"
           className="hidden w-56 shrink-0 md:block lg:w-64"
