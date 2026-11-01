@@ -13,6 +13,12 @@ type PageProps = {
   params: Promise<{ slug: string }>;
 };
 
+const archivedScheduleDates: Record<string, { iso: string; label: string }> = {
+  'rozklad-urokiv': { iso: '2016-11-03', label: '3 листопада 2016 року' },
+  'rozklad-dzvinkiv': { iso: '2016-11-03', label: '3 листопада 2016 року' },
+  'rozklad-fakultativiv': { iso: '2017-12-18', label: '18 грудня 2017 року' },
+};
+
 export async function generateStaticParams() {
   const [slugs] = await Promise.all([getPageSlugs(), getSearchIndex()]);
   return slugs.map((slug) => ({ slug }));
@@ -41,6 +47,8 @@ export default async function ContentPage({ params }: PageProps) {
   if (!page) {
     notFound();
   }
+
+  const archiveDate = archivedScheduleDates[slug];
 
   return (
     <main className="w-full">
@@ -79,6 +87,21 @@ export default async function ContentPage({ params }: PageProps) {
           </div>
         </div>
       </section>
+      {archiveDate && (
+        <aside
+          aria-label="Архівний розклад"
+          className="container mx-auto px-4 pt-6 md:px-6"
+        >
+          <p
+            className="rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm leading-relaxed text-amber-950"
+            role="status"
+          >
+            <strong>Архівна інформація.</strong> Дані перенесено з архіву;
+            актуальність не підтверджена. Останнє оновлення:{' '}
+            <time dateTime={archiveDate.iso}>{archiveDate.label}</time>.
+          </p>
+        </aside>
+      )}
       {(page.blocks?.length ||
         (page.pageType === 'contact' && page.mapEmbedUrl)) && (
         <section className="container mx-auto px-4 py-10 md:px-6 md:py-14">
