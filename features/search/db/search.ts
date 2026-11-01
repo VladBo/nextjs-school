@@ -1,23 +1,8 @@
-import qs from 'qs';
+import { unstable_cache } from 'next/cache';
 
-const STRAPI_URL =
-  process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337';
-
-type StrapiCollection<T> = {
-  data: T[];
-};
-
-type ArticleSearchItem = {
-  documentId: string;
-  title: string;
-  description?: string | null;
-  slug: string;
-  publishedAt?: string | null;
-};
-
-type PageSearchItem = ArticleSearchItem & {
-  pageType?: string | null;
-};
+import { getArticles } from '@/features/articles/db';
+import { getPagesForSearch } from '@/features/pages/db/pages';
+import { CACHE_TAGS } from '@/lib/cache';
 
 export type SearchResult = {
   id: string;
@@ -28,18 +13,41 @@ export type SearchResult = {
   publishedAt?: string | null;
 };
 
-async function getCollection<T>(endpoint: string, query: object) {
-  const queryString = qs.stringify(query, { encodeValuesOnly: true });
-  const response = await fetch(`${STRAPI_URL}/api/${endpoint}?${queryString}`, {
-    cache: 'no-store',
-  });
+export const getSearchIndex = unstable_cache(
+  async (): Promise<SearchResult[]> => {
+    const [articles, pages] = await Promise.all([
+      getArticles(),
+      getPagesForSearch(),
+    ]);
 
-  if (!response.ok) {
-    throw new Error(`Unable to search ${endpoint}: ${response.status}`);
-  }
-
-  return (await response.json()) as StrapiCollection<T>;
-}
+    return [
+      ...articles.flatMap((article) =>
+        article.documentId && article.title && article.slug
+          ? [
+              {
+                id: article.documentId,
+                title: article.title,
+                description: article.description,
+                href: `/articles/${article.slug}`,
+                type: 'Стаття' as const,
+                publishedAt: article.publishedAt,
+              },
+            ]
+          : []
+      ),
+      ...pages.map((page) => ({
+        id: page.documentId,
+        title: page.title,
+        description: page.description,
+        href: `/pages/${page.slug}`,
+        type: 'Сторінка' as const,
+        publishedAt: page.publishedAt,
+      })),
+    ];
+  },
+  ['site-search-index'],
+  { tags: [CACHE_TAGS.ARTICLES, CACHE_TAGS.PAGES], revalidate: false }
+);
 
 export async function searchContent(query: string): Promise<SearchResult[]> {
   const normalizedQuery = query.trim();
@@ -48,44 +56,12 @@ export async function searchContent(query: string): Promise<SearchResult[]> {
     return [];
   }
 
-  const filters = {
-    $or: [
-      { title: { $containsi: normalizedQuery } },
-      { description: { $containsi: normalizedQuery } },
-    ],
-  };
+  const searchTerms = normalizedQuery.toLocaleLowerCase('uk-UA');
+  const index = await getSearchIndex();
 
-  const [articles, pages] = await Promise.all([
-    getCollection<ArticleSearchItem>('articles', {
-      fields: ['title', 'description', 'slug', 'publishedAt'],
-      filters,
-      pagination: { pageSize: 20 },
-      sort: ['publishedAt:desc'],
-    }),
-    getCollection<PageSearchItem>('pages', {
-      fields: ['title', 'description', 'slug', 'pageType', 'publishedAt'],
-      filters,
-      pagination: { pageSize: 20 },
-      sort: ['sourceUpdatedAt:desc'],
-    }),
-  ]);
-
-  return [
-    ...articles.data.map((article) => ({
-      id: article.documentId,
-      title: article.title,
-      description: article.description,
-      href: `/articles/${article.slug}`,
-      type: 'Стаття' as const,
-      publishedAt: article.publishedAt,
-    })),
-    ...pages.data.map((page) => ({
-      id: page.documentId,
-      title: page.title,
-      description: page.description,
-      href: `/pages/${page.slug}`,
-      type: 'Сторінка' as const,
-      publishedAt: page.publishedAt,
-    })),
-  ];
+  return index.filter((item) =>
+    `${item.title} ${item.description ?? ''}`
+      .toLocaleLowerCase('uk-UA')
+      .includes(searchTerms)
+  );
 }

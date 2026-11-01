@@ -4,7 +4,19 @@ import { notFound } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
 import { H5PPlayer } from '@/features/h5p/components';
-import { getH5PContentById } from '@/features/h5p/db';
+import { getH5PContentById, getH5PContents } from '@/features/h5p/db';
+
+export async function generateStaticParams() {
+  const response = await getH5PContents();
+
+  if (!response) {
+    throw new Error('Unable to load quizzes from Strapi during the build');
+  }
+
+  return response.data
+    .filter((content) => content.sourceLocale === 'uk' && content.documentId)
+    .map((content) => ({ id: content.documentId }));
+}
 
 export default async function QuizPage({
   params,

@@ -45,7 +45,12 @@ export async function POST(request: NextRequest) {
     }
 
     if (payload.model === 'article' && payload.entry?.slug) {
-      revalidatePath(`/articles/${payload.entry.slug}`);
+      revalidateTag(`article-${payload.entry.slug}`);
+      revalidatePath('/articles/[slug]', 'page');
+    }
+
+    if (payload.model === 'page' && payload.entry?.slug) {
+      revalidatePath('/pages/[slug]', 'page');
     }
 
     if (payload.model === 'course' && payload.entry?.slug) {

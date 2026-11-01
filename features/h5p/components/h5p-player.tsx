@@ -33,8 +33,9 @@ export function H5PPlayer({ contentId, title }: H5PPlayerProps) {
         // Initialize H5P with our API route that serves extracted content
         const h5pPath = `/api/h5p/${contentId}`;
 
-        h5pInstanceRef.current = new H5P(containerRef.current, {
+        h5pInstanceRef.current = await new H5P(containerRef.current, {
           h5pJsonPath: h5pPath,
+          contentJsonPath: h5pPath,
           librariesPath: '/api/h5p/libraries',
           frameJs: '/h5p/frame.bundle.js',
           frameCss: '/h5p/styles/h5p.css',
@@ -46,7 +47,7 @@ export function H5PPlayer({ contentId, title }: H5PPlayerProps) {
           embed: false,
         });
 
-        setLoading(false);
+        if (mounted) setLoading(false);
       } catch (err) {
         logger.error('H5P initialization error:', err);
         if (mounted) {

@@ -5,6 +5,7 @@ import { logger } from '@/lib/logger';
 
 const STRAPI_URL =
   process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337';
+const ASSET_BASE_URL = process.env.ASSET_BASE_URL?.replace(/\/$/, '');
 
 export async function GET(
   request: NextRequest,
@@ -14,12 +15,14 @@ export async function GET(
   const filePath = path.join('/');
 
   try {
-    const strapiUrl = `${STRAPI_URL}/api/h5p/content/${contentId}/${filePath}`;
+    const assetUrl = ASSET_BASE_URL
+      ? `${ASSET_BASE_URL}/h5p/content/${contentId}/${filePath}`
+      : `${STRAPI_URL}/api/h5p/content/${contentId}/${filePath}`;
     return proxyH5PFile({
-      cacheControl:
-        'public, max-age=0, s-maxage=60, stale-while-revalidate=300',
+      cacheControl: 'no-store',
+      cacheTags: ['h5p-assets', `h5p-content-${contentId}`],
       request,
-      upstreamUrl: strapiUrl,
+      upstreamUrl: assetUrl,
     });
   } catch (error) {
     logger.error('Error fetching H5P content:', error);
