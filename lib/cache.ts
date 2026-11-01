@@ -1,5 +1,3 @@
-import { revalidatePath, revalidateTag } from 'next/cache';
-
 export const CACHE_TAGS = {
   GLOBAL_SETTINGS: 'global-settings',
   HOMEPAGE: 'homepage',
@@ -7,6 +5,8 @@ export const CACHE_TAGS = {
   FOOTER_MENU: 'footer-menu',
   ARTICLES: 'articles',
   COURSES: 'courses',
+  H5P_CONTENTS: 'h5p-contents',
+  H5P_CONTENT: 'h5p-content',
   AUTHORS: 'authors',
   CATEGORIES: 'categories',
   TAGS: 'tags',
@@ -17,9 +17,10 @@ export const CONTENT_TYPE_CACHE_MAP = {
   global: [CACHE_TAGS.GLOBAL_SETTINGS],
   homepage: [CACHE_TAGS.HOMEPAGE],
   'header-menu': [CACHE_TAGS.HEADER_MENU],
-  'footer-menu': [CACHE_TAGS.HEADER_MENU],
+  'footer-menu': [CACHE_TAGS.FOOTER_MENU],
   article: [CACHE_TAGS.ARTICLES, CACHE_TAGS.HOMEPAGE],
   course: [CACHE_TAGS.COURSES, CACHE_TAGS.HOMEPAGE],
+  'h5p-content': [CACHE_TAGS.H5P_CONTENTS, CACHE_TAGS.H5P_CONTENT],
   author: [CACHE_TAGS.AUTHORS],
   category: [CACHE_TAGS.CATEGORIES],
   tag: [CACHE_TAGS.TAGS],

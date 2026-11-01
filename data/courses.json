@@ -1,32 +1,32 @@
 {
   "intro-programming": {
-    "title": "Introduction to Programming",
-    "subtitle": "Learn Python fundamentals and computational thinking",
-    "description": "This course introduces students to the fundamental concepts of programming using Python. Students will learn to think computationally and solve problems through code.",
-    "badge": "Grade 9-10",
+    "title": "Вступ до програмування",
+    "subtitle": "Основи Python та алгоритмічного мислення",
+    "description": "Курс знайомить учнів з основними поняттями програмування мовою Python. Учні вчаться мислити алгоритмічно та розв’язувати задачі за допомогою коду.",
+    "badge": "9–10 класи",
     "heroImage": "/placeholder.svg?height=200&width=300",
-    "breadcrumb": { "label": "Courses", "href": "/courses" },
-    "sidebarHtml": "<div><h4>Course Information</h4><ul><li>Mon, Wed, Fri</li><li>10:00 AM - 11:30 AM</li><li>25 students enrolled</li></ul><hr/><h4>Prerequisites</h4><p>Basic computer literacy</p><h4>Duration</h4><p>Full academic year</p></div>",
-    "contentHtml": "<h2>Course Overview</h2><p>Introduction to Programming is designed for students with little to no programming experience. Through hands-on projects and interactive exercises, students will master the fundamentals of Python programming while developing critical thinking and problem-solving skills.</p><p>By the end of this course, students will be able to write simple programs, understand basic algorithms, and have a solid foundation for more advanced computer science courses.</p><h2>Learning Objectives</h2><ul><li>Understand fundamental programming concepts including variables, data types, and operators</li><li>Master control structures: conditionals, loops, and functions</li><li>Work with basic data structures like lists and dictionaries</li><li>Develop problem-solving skills through algorithmic thinking</li><li>Create simple interactive programs and games</li></ul>"
+    "breadcrumb": { "label": "Курси", "href": "/courses" },
+    "sidebarHtml": "<div><h4>Інформація про курс</h4><ul><li>Понеділок, середа, п’ятниця</li><li>10:00–11:30</li><li>До 25 учнів</li></ul><hr/><h4>Початкові вимоги</h4><p>Базова цифрова грамотність</p><h4>Тривалість</h4><p>Навчальний рік</p></div>",
+    "contentHtml": "<h2>Про курс</h2><p>Курс призначений для учнів без досвіду програмування або з початковими знаннями. Завдяки практичним проєктам та інтерактивним вправам учні опановують основи Python, розвивають критичне мислення й навички розв’язування задач.</p><p>Після завершення курсу учні зможуть створювати прості програми, розумітимуть базові алгоритми та матимуть основу для подальшого вивчення інформатики.</p><h2>Результати навчання</h2><ul><li>Розуміти змінні, типи даних та оператори</li><li>Використовувати розгалуження, цикли й функції</li><li>Працювати зі списками та словниками</li><li>Розв’язувати задачі за допомогою алгоритмів</li><li>Створювати прості інтерактивні програми та ігри</li></ul>"
   },
   "advanced-programming": {
-    "title": "Advanced Programming",
-    "subtitle": "Object-oriented programming and algorithms",
-    "description": "A deep dive into OOP, data structures, and algorithms using Java and C++. Ideal for students preparing for olympiads or university CS programs.",
-    "badge": "Grade 11-12",
+    "title": "Поглиблене програмування",
+    "subtitle": "Об’єктно-орієнтоване програмування та алгоритми",
+    "description": "Поглиблене вивчення ООП, структур даних та алгоритмів мовами Java і C++. Курс підходить для підготовки до олімпіад і подальшого навчання.",
+    "badge": "11–12 класи",
     "heroImage": "/placeholder.svg?height=200&width=300",
-    "breadcrumb": { "label": "Courses", "href": "/courses" },
-    "sidebarHtml": "<div><h4>Course Information</h4><ul><li>Tue, Thu</li><li>2:00 PM - 3:30 PM</li><li>18 students enrolled</li></ul><hr/><h4>Prerequisites</h4><p>Intro to Programming or equivalent</p><h4>Duration</h4><p>Full academic year</p></div>",
-    "contentHtml": "<h2>Course Overview</h2><p>This course covers advanced programming concepts, including object-oriented design, recursion, and algorithmic problem solving. Students will use Java and C++ to implement complex data structures and algorithms.</p><h2>Topics</h2><ul><li>Classes, objects, and inheritance</li><li>Recursion and backtracking</li><li>Sorting and searching algorithms</li><li>Trees, graphs, and advanced data structures</li><li>Competitive programming techniques</li></ul>"
+    "breadcrumb": { "label": "Курси", "href": "/courses" },
+    "sidebarHtml": "<div><h4>Інформація про курс</h4><ul><li>Вівторок, четвер</li><li>14:00–15:30</li><li>До 18 учнів</li></ul><hr/><h4>Початкові вимоги</h4><p>Вступ до програмування або рівнозначні знання</p><h4>Тривалість</h4><p>Навчальний рік</p></div>",
+    "contentHtml": "<h2>Про курс</h2><p>Курс охоплює об’єктно-орієнтоване проєктування, рекурсію та алгоритмічне розв’язування задач. Учні використовують Java і C++ для реалізації складніших структур даних та алгоритмів.</p><h2>Основні теми</h2><ul><li>Класи, об’єкти та успадкування</li><li>Рекурсія і пошук із поверненням</li><li>Алгоритми сортування та пошуку</li><li>Дерева, графи й розширені структури даних</li><li>Техніки олімпіадного програмування</li></ul>"
   },
   "web-development": {
-    "title": "Web Development",
-    "subtitle": "Modern web technologies and frameworks",
-    "description": "Students will learn to build interactive websites and web apps using HTML, CSS, JavaScript, and React. Includes hands-on projects and teamwork.",
-    "badge": "Grade 10-12",
+    "title": "Веброзробка",
+    "subtitle": "Сучасні вебтехнології та фреймворки",
+    "description": "Учні створюють інтерактивні сайти й вебзастосунки за допомогою HTML, CSS, JavaScript і React. Навчання включає практичні проєкти та командну роботу.",
+    "badge": "10–12 класи",
     "heroImage": "/placeholder.svg?height=200&width=300",
-    "breadcrumb": { "label": "Courses", "href": "/courses" },
-    "sidebarHtml": "<div><h4>Course Information</h4><ul><li>Sat</li><li>11:00 AM - 1:00 PM</li><li>30 students enrolled</li></ul><hr/><h4>Prerequisites</h4><p>Basic programming knowledge</p><h4>Duration</h4><p>1 semester</p></div>",
-    "contentHtml": "<h2>Course Overview</h2><p>This course introduces students to web development using modern tools and frameworks. Students will create responsive websites and dynamic web applications.</p><h2>Topics</h2><ul><li>HTML5 & CSS3 basics</li><li>JavaScript fundamentals</li><li>React basics</li><li>APIs and AJAX</li><li>Team project: Build a website</li></ul>"
+    "breadcrumb": { "label": "Курси", "href": "/courses" },
+    "sidebarHtml": "<div><h4>Інформація про курс</h4><ul><li>Субота</li><li>11:00–13:00</li><li>До 30 учнів</li></ul><hr/><h4>Початкові вимоги</h4><p>Базові знання програмування</p><h4>Тривалість</h4><p>Один семестр</p></div>",
+    "contentHtml": "<h2>Про курс</h2><p>Курс знайомить учнів із веброзробкою за допомогою сучасних інструментів і фреймворків. Учні створюють адаптивні сайти та динамічні вебзастосунки.</p><h2>Основні теми</h2><ul><li>Основи HTML5 і CSS3</li><li>Основи JavaScript</li><li>Знайомство з React</li><li>API та асинхронні запити</li><li>Командний проєкт: створення сайту</li></ul>"
   }
 }

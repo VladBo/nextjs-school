@@ -1,4 +1,32 @@
 import { client } from '@/lib/api';
+import { CACHE_TAGS } from '@/lib/cache';
+
+export const getArticles = async () => {
+  const response = await client.GET('/articles', {
+    params: {
+      query: {
+        filters: {
+          legacyNid: {
+            $notNull: true,
+          },
+        },
+        populate: '*',
+        sort: 'sourceUpdatedAt:desc',
+        pagination: {
+          pageSize: 50,
+        },
+      },
+    },
+    fetch: (request: RequestInfo, init?: RequestInit) =>
+      fetch(request, {
+        ...init,
+        next: { tags: [CACHE_TAGS.ARTICLES] },
+        cache: 'force-cache',
+      }),
+  });
+
+  return response.data?.data ?? [];
+};
 
 export const getArticleBySlug = async (slug: string) => {
   const response = await client.GET('/articles', {

@@ -26,11 +26,11 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
 
   return {
     title: article.title,
-    description: `Article by ${article.author} on ${article.publishedAt}`,
+    description: article.description || `Матеріал: ${article.title}`,
   };
 }
 
-export const ArticlePage = async (props: PageProps) => {
+async function ArticlePage(props: PageProps) {
   const params = await props.params;
   const article = await getArticleBySlug(params.slug);
 
@@ -44,11 +44,11 @@ export const ArticlePage = async (props: PageProps) => {
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex items-center space-x-2 text-sm text-gray-500">
             <Link href="/" className="hover:text-gray-700">
-              Home
+              Головна
             </Link>
             <span>/</span>
             <Link href="/articles" className="hover:text-gray-700">
-              Articles
+              Матеріали
             </Link>
             <span>/</span>
             <span className="text-gray-900">{article.title}</span>
@@ -56,7 +56,7 @@ export const ArticlePage = async (props: PageProps) => {
         </div>
       </nav>
 
-      <BackButton href="/articles" title="Back to Articles" />
+      <BackButton href="/articles" title="До всіх матеріалів" />
 
       {/* Article Hero */}
       <section className="w-full py-6 md:py-8">
@@ -77,7 +77,9 @@ export const ArticlePage = async (props: PageProps) => {
 
               <ArticleMeta
                 authorName={article.author?.name ?? ''}
-                publishedAt={article.publishedAt ?? ''}
+                publishedAt={
+                  article.sourceUpdatedAt ?? article.publishedAt ?? ''
+                }
               />
               {article.cover && (
                 <ArticleImage
@@ -183,6 +185,6 @@ export const ArticlePage = async (props: PageProps) => {
       )} */}
     </article>
   );
-};
+}
 
 export default ArticlePage;

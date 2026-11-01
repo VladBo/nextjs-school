@@ -116,7 +116,8 @@ const Carousel = React.forwardRef<
       api.on('select', onSelect);
 
       return () => {
-        api?.off('select', onSelect);
+        api.off('reInit', onSelect);
+        api.off('select', onSelect);
       };
     }, [api, onSelect]);
 
@@ -157,7 +158,7 @@ const CarouselContent = React.forwardRef<
   const { carouselRef, orientation } = useCarousel();
 
   return (
-    <div ref={carouselRef} className="overflow-hidden">
+    <div ref={carouselRef} className="h-full overflow-hidden">
       <div
         ref={ref}
         className={cn(
@@ -216,8 +217,8 @@ const CarouselPrevious = React.forwardRef<
       onClick={scrollPrev}
       {...props}
     >
-      <ArrowLeft className="h-4 w-4" />
-      <span className="sr-only">Previous slide</span>
+      <ArrowLeft className="size-4" />
+      <span className="sr-only">Попередній слайд</span>
     </Button>
   );
 });
@@ -245,8 +246,8 @@ const CarouselNext = React.forwardRef<
       onClick={scrollNext}
       {...props}
     >
-      <ArrowRight className="h-4 w-4" />
-      <span className="sr-only">Next slide</span>
+      <ArrowRight className="size-4" />
+      <span className="sr-only">Наступний слайд</span>
     </Button>
   );
 });

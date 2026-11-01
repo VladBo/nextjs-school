@@ -1,7 +1,8 @@
-import { BookOpen, Code } from 'lucide-react';
+import { BookOpen, Code, Search } from 'lucide-react';
 import Link from 'next/link';
 
 import { ListItem } from '@/components/list-item';
+import { Input } from '@/components/ui/input';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -11,6 +12,7 @@ import {
   NavigationMenuTrigger,
 } from '@/components/ui/navigation-menu';
 import { getGlobalSettings } from '@/features/homepage/db';
+import { cn } from '@/lib/utils';
 
 import { getHeaderMenu } from '../db';
 
@@ -22,63 +24,102 @@ export const Header = async () => {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto flex items-center justify-between p-2 px-4 md:px-6">
+      <div className="container mx-auto flex items-center justify-between gap-4 p-2 px-4 md:px-6">
         <div className="flex items-center">
           <Link className="mr-6 flex items-center space-x-2" href="/">
             <Code className="size-6" />
-            <span className="font-bold sm:inline-block">
+            <span className="hidden font-bold xl:inline-block">
               {globalSettings?.siteName}
             </span>
           </Link>
-          <NavigationMenu className="lg:flex">
+          <NavigationMenu className="hidden md:flex">
             <NavigationMenuList>
               {header?.links?.map((item) =>
                 item.type === 'wrapper' ? (
                   <NavigationMenuItem key={item.title}>
                     <NavigationMenuTrigger>{item.title}</NavigationMenuTrigger>
                     <NavigationMenuContent>
-                      <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
-                        <li className="row-span-3">
-                          <NavigationMenuLink asChild>
-                            <Link
-                              className="flex size-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
-                              href={item.url ?? ''}
-                            >
-                              <BookOpen className="size-6" />
-                              <div className="mb-2 mt-4 text-lg font-medium">
-                                {item.title}
-                              </div>
-                              <p className="text-sm leading-tight text-muted-foreground">
-                                {item.description}
-                              </p>
-                            </Link>
-                          </NavigationMenuLink>
+                      <ul
+                        className={cn(
+                          'grid max-h-[min(72vh,680px)] w-[min(92vw,680px)] gap-1 overflow-y-auto p-3',
+                          item.sublinks && item.sublinks.length > 4
+                            ? 'sm:grid-cols-2'
+                            : 'w-[min(88vw,440px)]'
+                        )}
+                      >
+                        <li
+                          className={cn(
+                            'mb-1 rounded-md bg-muted/60 p-3',
+                            item.sublinks &&
+                              item.sublinks.length > 4 &&
+                              'sm:col-span-2'
+                          )}
+                        >
+                          <div className="flex items-start gap-3">
+                            <BookOpen className="mt-0.5 size-5 shrink-0 text-blue-600" />
+                            <div>
+                              <div className="font-medium">{item.title}</div>
+                              {item.description && (
+                                <p className="mt-1 text-sm leading-snug text-muted-foreground">
+                                  {item.description}
+                                </p>
+                              )}
+                            </div>
+                          </div>
                         </li>
-                        {item.sublinks?.map((child) => (
-                          <ListItem
-                            key={child.title}
-                            href={child.url ?? ''}
-                            title={child.title}
-                          >
-                            {child.description}
-                          </ListItem>
-                        ))}
+                        {item.sublinks
+                          ?.filter((child) => child.url)
+                          .map((child) => (
+                            <ListItem
+                              key={child.title}
+                              href={child.url ?? '/'}
+                              title={child.title}
+                            >
+                              {child.description}
+                            </ListItem>
+                          ))}
                       </ul>
                     </NavigationMenuContent>
                   </NavigationMenuItem>
                 ) : (
                   <NavigationMenuItem key={item.title}>
-                    <Link href={item.url ?? ''} passHref legacyBehavior>
-                      <NavigationMenuLink className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50">
+                    <NavigationMenuLink asChild>
+                      <Link
+                        href={item.url ?? '/'}
+                        className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none data-[active]:bg-accent/50"
+                      >
                         {item.title}
-                      </NavigationMenuLink>
-                    </Link>
+                      </Link>
+                    </NavigationMenuLink>
                   </NavigationMenuItem>
                 )
               )}
             </NavigationMenuList>
           </NavigationMenu>
         </div>
+        <form
+          action="/search"
+          className="hidden w-56 shrink-0 md:block lg:w-64"
+          method="get"
+          role="search"
+        >
+          <div className="relative">
+            <Input
+              aria-label="Пошук на сайті"
+              className="pr-10"
+              name="q"
+              placeholder="Пошук..."
+              type="search"
+            />
+            <button
+              aria-label="Знайти"
+              className="absolute right-1 top-1/2 flex size-8 -translate-y-1/2 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              type="submit"
+            >
+              <Search className="size-4" />
+            </button>
+          </div>
+        </form>
       </div>
     </header>
   );

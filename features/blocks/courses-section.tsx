@@ -35,10 +35,13 @@ export const CoursesSection: FC<CoursesSectionProps> = ({ content }) => {
                 <CardTitle>{course.title}</CardTitle>
                 <CardDescription>{course.description}</CardDescription>
               </CardHeader>
-              {course.description && (
+              {(course.grade || course.maxStudents) && (
                 <CardContent>
-                  <div className="flex items-center space-x-4 text-sm text-gray-500">
-                    {course.description}
+                  <div className="flex flex-wrap items-center gap-3 text-sm text-gray-500">
+                    {course.grade && <span>{course.grade}</span>}
+                    {course.maxStudents && (
+                      <span>До {course.maxStudents} учнів</span>
+                    )}
                   </div>
                 </CardContent>
               )}

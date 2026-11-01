@@ -1,0 +1,123 @@
+/* H5P Player Styles */
+
+/* Container styles */
+.h5p-container {
+  position: relative;
+  width: 100%;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.h5p-player {
+  min-height: 400px;
+  width: 100%;
+}
+
+/* Iframe container styles */
+.h5p-iframe-container {
+  position: relative;
+  width: 100%;
+  min-height: 500px;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.h5p-iframe-container iframe {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* H5P frame overrides */
+.h5p-frame {
+  width: 100%;
+  border: none;
+}
+
+/* H5P content overrides for better integration */
+.h5p-content {
+  font-family: inherit;
+}
+
+/* Ensure H5P fullscreen works */
+.h5p-fullscreen {
+  z-index: 9999 !important;
+}
+
+/* H5P action bar styling */
+.h5p-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0.5rem;
+  gap: 0.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .h5p-player {
+    min-height: 300px;
+  }
+
+  .h5p-iframe-container {
+    min-height: 400px;
+  }
+}
+
+/* Dark mode compatibility */
+.dark .h5p-container {
+  --h5p-bg: hsl(var(--background));
+  --h5p-text: hsl(var(--foreground));
+}
+
+/* Loading spinner animation override */
+.h5p-container .animate-spin {
+  animation: h5p-spin 1s linear infinite;
+}
+
+@keyframes h5p-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Quiz-specific styles */
+.h5p-question-content {
+  padding: 1rem;
+}
+
+.h5p-question-buttons {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+/* Ensure proper stacking context */
+.h5p-container * {
+  box-sizing: border-box;
+}
+
+/* Fix for H5P popups and dialogs */
+.h5p-dialog-wrapper {
+  z-index: 10000 !important;
+}
+
+/* Score bar styling */
+.h5p-joubelui-score-bar {
+  margin-top: 1rem;
+}
+
+/* Progress bar styling */
+.h5p-joubelui-progressbar {
+  background: hsl(var(--muted));
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.h5p-joubelui-progressbar-progress {
+  background: hsl(var(--primary));
+  transition: width 0.3s ease;
+}
