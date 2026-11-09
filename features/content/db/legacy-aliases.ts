@@ -5,6 +5,8 @@ import { fetchStrapi } from '@/lib/api';
 
 import {
   buildLegacyAliasMap,
+  findLegacyAliasDestination,
+  getFulfilledAliasSources,
   normalizeLegacyPath,
 } from './legacy-aliases-core.mjs';
 
@@ -23,6 +25,12 @@ type LegacyAliasInput = {
   base: string;
   slug: string | null | undefined;
 };
+type LegacyAliasLookup = { aliases: LegacyAlias[]; incomplete: boolean };
+const getCachedLegacyRecords = unstable_cache(
+  fetchLegacyRecords,
+  ['legacy-records'],
+  { tags: [ALIAS_CACHE_TAG], revalidate: false }
+);
 
 async function fetchLegacyRecords(
   collection: string,
@@ -52,45 +60,44 @@ async function fetchLegacyRecords(
   return payload.data;
 }
 
-export const getLegacyContentAliases: () => Promise<LegacyAlias[]> =
-  unstable_cache(
-    async () => {
-      const [pages, articles, quizzes] = await Promise.all([
-        fetchLegacyRecords('pages', ['pages']),
-        fetchLegacyRecords('articles', ['articles']),
-        // Keep compatible with production Strapi while the slug schema deploys.
-        fetchLegacyRecords(
-          'h5p-contents',
-          ['h5p-contents', 'h5p-content'],
-          false
-        ),
-      ]);
-
-      const records: LegacyAliasInput[] = [
-        ...pages.map((record) => ({
-          record,
-          base: '/pages',
-          slug: record.slug,
-        })),
-        ...articles.map((record) => ({
-          record,
-          base: '/articles',
-          slug: record.slug,
-        })),
-        ...quizzes.map((record) => ({
-          record,
-          base: '/quizzes',
-          slug:
-            record.slug ||
-            (record.legacyPath ? slugFromLegacyPath(record.legacyPath) : null),
-        })),
-      ];
-
-      return buildLegacyAliasMap(records);
-    },
-    ['legacy-content-aliases'],
-    { tags: [ALIAS_CACHE_TAG], revalidate: false }
+export const getLegacyContentAliases = async (): Promise<LegacyAliasLookup> => {
+  const settled = await Promise.allSettled([
+    getCachedLegacyRecords('pages', ['pages']).then((records) =>
+      records.map((record) => ({
+        record,
+        base: '/pages',
+        slug: record.slug,
+      }))
+    ),
+    getCachedLegacyRecords('articles', ['articles']).then((records) =>
+      records.map((record) => ({
+        record,
+        base: '/articles',
+        slug: record.slug,
+      }))
+    ),
+    // Keep compatible with production Strapi while the slug schema deploys.
+    getCachedLegacyRecords(
+      'h5p-contents',
+      ['h5p-contents', 'h5p-content'],
+      false
+    ).then((records) =>
+      records.map((record) => ({
+        record,
+        base: '/quizzes',
+        slug: record.legacyPath ? slugFromLegacyPath(record.legacyPath) : null,
+      }))
+    ),
+  ]);
+  const sources = getFulfilledAliasSources(
+    settled as PromiseSettledResult<LegacyAliasInput[]>[]
   );
+
+  return {
+    aliases: buildLegacyAliasMap(sources.records),
+    incomplete: sources.incomplete,
+  };
+};
 
 function slugFromLegacyPath(path: string): string {
   return path.replace(/\/+$/, '').split('/').filter(Boolean).at(-1) || '';
@@ -98,16 +105,12 @@ function slugFromLegacyPath(path: string): string {
 
 export async function getLegacyContentDestination(path: string[]) {
   const alias = normalizeLegacyPath(`content/${path.join('/')}`);
-  const match = (await getLegacyContentAliases()).find(
-    (item) => item.alias === alias
-  );
-  return match?.destination;
+  const lookup = await getLegacyContentAliases();
+  return findLegacyAliasDestination(lookup.aliases, alias, lookup.incomplete);
 }
 
 export async function getLegacyAliasDestination(path: string[]) {
   const alias = normalizeLegacyPath(path.join('/'));
-  const match = (await getLegacyContentAliases()).find(
-    (item) => item.alias === alias
-  );
-  return match?.destination;
+  const lookup = await getLegacyContentAliases();
+  return findLegacyAliasDestination(lookup.aliases, alias, lookup.incomplete);
 }
