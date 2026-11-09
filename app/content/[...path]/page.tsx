@@ -7,9 +7,11 @@ import {
 
 export async function generateStaticParams() {
   const aliases = await getLegacyContentAliases();
-  return aliases.map(({ alias }) => ({
-    path: alias.slice('content/'.length).split('/'),
-  }));
+  return aliases
+    .filter(({ alias }) => alias.startsWith('content/'))
+    .map(({ alias }) => ({
+      path: alias.slice('content/'.length).split('/'),
+    }));
 }
 
 export default async function DrupalAliasRedirect({
