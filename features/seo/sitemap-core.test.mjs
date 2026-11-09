@@ -30,13 +30,13 @@ test('builds canonical URLs for fixed and migrated content routes', () => {
   );
 });
 
-test('uses a stable fallback for local or unset site URL configuration', () => {
+test('uses the Vercel production URL until an explicit canonical URL is configured', () => {
   assert.equal(
-    resolveSitemapBaseUrl(undefined, 'school-site.vercel.app'),
-    'https://school-site.vercel.app'
+    resolveSitemapBaseUrl(undefined, 'janna-teacher2.com.ua'),
+    'https://v0-next-js-website-rebuild-vladbos-projects.vercel.app'
   );
   assert.equal(
-    resolveSitemapBaseUrl('https://school.example/', 'school-site.vercel.app'),
+    resolveSitemapBaseUrl('https://school.example/'),
     'https://school.example'
   );
 });

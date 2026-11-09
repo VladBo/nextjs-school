@@ -1,9 +1,7 @@
-export function resolveSitemapBaseUrl(configuredUrl, deploymentHost) {
+export function resolveSitemapBaseUrl(configuredUrl) {
   const candidate = configuredUrl?.trim()
     ? configuredUrl.trim()
-    : deploymentHost?.trim()
-      ? `https://${deploymentHost.trim()}`
-      : 'https://v0-next-js-website-rebuild-vladbos-projects.vercel.app';
+    : 'https://v0-next-js-website-rebuild-vladbos-projects.vercel.app';
 
   const url = new URL(candidate);
   if (!['http:', 'https:'].includes(url.protocol)) {

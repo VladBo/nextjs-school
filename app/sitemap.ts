@@ -17,10 +17,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     getPageSlugs(),
     getH5PContents(),
   ]);
-  const baseUrl = resolveSitemapBaseUrl(
-    process.env.NEXT_PUBLIC_SITE_URL,
-    process.env.VERCEL_PROJECT_PRODUCTION_URL
-  );
+  const baseUrl = resolveSitemapBaseUrl(process.env.NEXT_PUBLIC_SITE_URL);
 
   return buildSitemapEntries({
     baseUrl,
