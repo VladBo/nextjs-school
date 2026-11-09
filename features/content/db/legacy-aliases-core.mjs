@@ -23,11 +23,15 @@ export function findLegacyAliasDestination(aliases, alias, incomplete = false) {
 export function buildLegacyAliasMap(records) {
   return records
     .filter(({ record, slug }) => record.legacyPath && slug)
-    .map(({ record, base, slug }) => {
+    .flatMap(({ record, base, slug }) => {
       const alias = normalizeLegacyPath(record.legacyPath);
-      return {
-        alias,
-        destination: alias === 'home' ? '/' : `${base}/${slug}`,
-      };
+      const destination = alias === 'home' ? '/' : `${base}/${slug}`;
+      const aliases = [{ alias, destination }];
+
+      if (record.legacyNid != null) {
+        aliases.push({ alias: `node/${record.legacyNid}`, destination });
+      }
+
+      return aliases;
     });
 }

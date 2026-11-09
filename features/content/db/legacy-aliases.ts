@@ -17,6 +17,7 @@ const ALIAS_CACHE_TAG = 'legacy-content-aliases';
 type LegacyRecord = {
   slug?: string | null;
   legacyPath?: string | null;
+  legacyNid?: number | null;
 };
 type LegacyResponse = { data: LegacyRecord[] };
 type LegacyAlias = { alias: string; destination: string };
@@ -39,7 +40,7 @@ async function fetchLegacyRecords(
 ): Promise<LegacyRecord[]> {
   const query = qs.stringify(
     {
-      fields: [...(includeSlug ? ['slug'] : []), 'legacyPath'],
+      fields: [...(includeSlug ? ['slug'] : []), 'legacyPath', 'legacyNid'],
       pagination: { pageSize: 100 },
     },
     { encodeValuesOnly: true }
