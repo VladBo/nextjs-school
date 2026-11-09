@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "test:legacy-aliases": "node --test features/content/db/legacy-aliases-core.test.mjs",
+    "test:sitemap": "node --test features/seo/sitemap-core.test.mjs",
     "test:h5p-proxy": "node --test lib/h5p-proxy.test.js",
     "test:rich-text": "node --test features/blocks/rich-text.test.mjs",
     "lint": "next lint",
