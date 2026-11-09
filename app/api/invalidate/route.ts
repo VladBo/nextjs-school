@@ -57,6 +57,9 @@ export async function POST(request: NextRequest) {
       revalidateTag(tag);
     }
 
+    // Sitemap content is assembled from the same cached Strapi collections.
+    revalidatePath('/sitemap.xml');
+
     if (isMediaEvent) {
       // Media can be referenced from any page, so refresh the full route tree.
       revalidatePath('/', 'layout');
