@@ -26,6 +26,30 @@ test('maps legacy contact, homepage, and node aliases to current routes', () => 
   ]);
 });
 
+test('maps every migrated Drupal node id to its canonical content route', () => {
+  const aliases = buildLegacyAliasMap([
+    {
+      record: { legacyPath: 'content/kontakti', legacyNid: 5 },
+      base: '/pages',
+      slug: 'kontakti',
+    },
+    {
+      record: { legacyPath: 'content/hmarni-servisi', legacyNid: 14 },
+      base: '/articles',
+      slug: 'hmarni-servisi',
+    },
+  ]);
+
+  assert.equal(
+    findLegacyAliasDestination(aliases, 'node/5'),
+    '/pages/kontakti'
+  );
+  assert.equal(
+    findLegacyAliasDestination(aliases, 'node/14'),
+    '/articles/hmarni-servisi'
+  );
+});
+
 test('drops records without a usable alias or destination slug', () => {
   assert.deepEqual(
     buildLegacyAliasMap([
