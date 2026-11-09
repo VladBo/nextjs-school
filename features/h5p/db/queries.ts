@@ -12,7 +12,7 @@ const STRAPI_URL =
 async function fetchFromStrapi<T>(
   endpoint: string,
   query?: Record<string, unknown>
-): Promise<T | null> {
+): Promise<T> {
   const queryString = query
     ? `?${qs.stringify(query, { encodeValuesOnly: true })}`
     : '';
@@ -24,21 +24,20 @@ async function fetchFromStrapi<T>(
     });
 
     if (!response.ok) {
-      logger.error(
+      throw new Error(
         `Strapi fetch error: ${response.status} ${response.statusText}`
       );
-      return null;
     }
 
     return response.json();
   } catch (error) {
     logger.error('Strapi fetch error:', error);
-    return null;
+    throw error;
   }
 }
 
 export const getH5PContents = unstable_cache(
-  async (): Promise<H5PContentsResponse | null> => {
+  async (): Promise<H5PContentsResponse> => {
     return fetchFromStrapi<H5PContentsResponse>('/h5p-contents', {
       filters: {
         sourceLocale: {
@@ -53,7 +52,7 @@ export const getH5PContents = unstable_cache(
 );
 
 export const getH5PContentById = unstable_cache(
-  async (id: string): Promise<H5PContentResponse | null> => {
+  async (id: string): Promise<H5PContentResponse> => {
     return fetchFromStrapi<H5PContentResponse>(`/h5p-contents/${id}`);
   },
   ['h5p-content'],

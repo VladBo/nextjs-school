@@ -4,15 +4,12 @@ import { notFound, permanentRedirect } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
 import { H5PPlayer } from '@/features/h5p/components';
-import { getH5PContentById, getH5PContents } from '@/features/h5p/db';
+import { getH5PContents } from '@/features/h5p/db';
+import { findContentBySlug } from '@/features/h5p/db/find-content-by-slug.mjs';
 import { getH5PRouteSlug } from '@/features/h5p/types';
 
 export async function generateStaticParams() {
   const response = await getH5PContents();
-
-  if (!response) {
-    throw new Error('Unable to load quizzes from Strapi during the build');
-  }
 
   return response.data
     .filter((content) => content.sourceLocale === 'uk')
@@ -26,22 +23,15 @@ export default async function QuizPage({
 }) {
   const { slug } = await params;
   const contents = await getH5PContents();
-  const indexedContent = contents?.data.find(
-    (content) =>
-      content.documentId === slug || getH5PRouteSlug(content) === slug
-  );
-  if (!indexedContent) notFound();
+  const content = findContentBySlug(contents.data, slug, getH5PRouteSlug);
+  if (!content) notFound();
 
-  const canonicalSlug = getH5PRouteSlug(indexedContent);
+  const canonicalSlug = getH5PRouteSlug(content);
   if (slug !== canonicalSlug) permanentRedirect(`/quizzes/${canonicalSlug}`);
 
-  const response = await getH5PContentById(indexedContent.documentId);
-
-  if (!response || !response.data || response.data.sourceLocale !== 'uk') {
+  if (content.sourceLocale !== 'uk') {
     notFound();
   }
-
-  const content = response.data;
 
   return (
     <div className="container mx-auto max-w-4xl px-4 py-12">

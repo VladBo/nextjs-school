@@ -7,7 +7,7 @@ import {
 
 export async function generateStaticParams() {
   const aliases = await getLegacyContentAliases();
-  return aliases
+  return aliases.aliases
     .filter(({ alias }) => alias.startsWith('node/'))
     .map(({ alias }) => ({ id: alias.slice('node/'.length) }));
 }
